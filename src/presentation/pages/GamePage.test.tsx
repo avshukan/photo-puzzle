@@ -43,6 +43,7 @@ describe('GamePage', () => {
     render(<GamePage />);
 
     const input = screen.getByLabelText(/file/i) as HTMLInputElement;
+
     const file = new File(['x'], 'photo.png', { type: 'image/png' });
 
     await userEvent.upload(input, file);

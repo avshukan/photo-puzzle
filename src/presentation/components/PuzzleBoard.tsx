@@ -1,3 +1,5 @@
+import { canMove } from '../../domain';
+
 type Props = {
   width: number;
   height: number;
@@ -6,7 +8,6 @@ type Props = {
   onTileClick: (fromIndex: number) => void;
 };
 
-// MVP: фикс 4x4. Но компонент уже поддерживает прямоугольник.
 const TILE_PX = 96;
 const GAP_PX = 2;
 
@@ -41,6 +42,7 @@ export function PuzzleBoard({
                 background: '#f2f2f2',
                 border: '1px solid #e5e5e5',
                 borderRadius: 8,
+                cursor: 'not-allowed',
               }}
             />
           );
@@ -49,16 +51,18 @@ export function PuzzleBoard({
         const tileIndex = tile - 1; // 0..N-2
         const srcRow = Math.floor(tileIndex / width);
         const srcCol = tileIndex % width;
+        const movable = canMove({ width, height, tiles }, index);
 
         return (
           <button
             key={tile}
             onClick={() => onTileClick(index)}
+            disabled={!movable}
             style={{
               border: '1px solid #e5e5e5',
               borderRadius: 8,
               padding: 0,
-              cursor: 'pointer',
+              cursor: movable ? 'pointer' : 'not-allowed',
               backgroundImage: `url(${imageUrl})`,
               backgroundRepeat: 'no-repeat',
               backgroundSize: `${width * TILE_PX}px ${height * TILE_PX}px`,
