@@ -73,7 +73,9 @@ export function GamePage() {
           >
             Choose file
           </span>
-          <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName || 'No file chosen'}</span>
+          <span style={{ fontSize: 12, opacity: 0.7 }}>
+            {fileName || 'No file chosen'}
+          </span>
         </label>
       </div>
 
@@ -134,7 +136,9 @@ export function GamePage() {
               >
                 Choose file
               </span>
-              <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName || 'No file chosen'}</span>
+              <span style={{ fontSize: 12, opacity: 0.7 }}>
+                {fileName || 'No file chosen'}
+              </span>
             </label>
           </div>
         </div>
