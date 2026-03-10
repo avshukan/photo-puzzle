@@ -28,7 +28,11 @@ describe('StartGame', () => {
     expect(imagePort.getDefaultImageUrl).toHaveBeenCalledTimes(1);
     expect(imagePort.createObjectUrl).not.toHaveBeenCalled();
     expect(shuffleSpy).toHaveBeenCalledWith(4, 4, 300);
-    expect(game).toEqual({ imageUrl: 'default-url', puzzle: puzzleMock, status: 'playing' });
+    expect(game).toEqual({
+      imageUrl: 'default-url',
+      puzzle: puzzleMock,
+      status: 'playing',
+    });
 
     shuffleSpy.mockRestore();
   });
