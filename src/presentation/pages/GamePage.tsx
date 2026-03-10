@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 
 export function GamePage() {
-  const [fileName, setFileName] = useState<string>('default');
+  const [fileName, setFileName] = useState<string>('');
+  const uploadRef = useRef<HTMLInputElement>(null);
+  const uploadWinRef = useRef<HTMLInputElement>(null);
 
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
@@ -53,7 +55,7 @@ export function GamePage() {
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input
-            id="upload"
+            ref={uploadRef}
             type="file"
             accept="image/*"
             onChange={onUpload}
@@ -67,11 +69,11 @@ export function GamePage() {
               cursor: 'pointer',
               fontSize: 14,
             }}
-            onClick={() => document.getElementById('upload')?.click()}
+            onClick={() => uploadRef.current?.click()}
           >
             Choose file
           </span>
-          <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName}</span>
+          <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName || 'No file chosen'}</span>
         </label>
       </div>
 
@@ -114,7 +116,7 @@ export function GamePage() {
             <div style={{ height: 12 }} />
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
-                id="upload-win"
+                ref={uploadWinRef}
                 type="file"
                 accept="image/*"
                 onChange={onUpload}
@@ -128,11 +130,11 @@ export function GamePage() {
                   cursor: 'pointer',
                   fontSize: 14,
                 }}
-                onClick={() => document.getElementById('upload')?.click()}
+                onClick={() => uploadWinRef.current?.click()}
               >
                 Choose file
               </span>
-              <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName}</span>
+              <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName || 'No file chosen'}</span>
             </label>
           </div>
         </div>
