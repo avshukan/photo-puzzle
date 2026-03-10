@@ -32,28 +32,34 @@ describe('MoveTile', () => {
 
   it('applies a move and keeps playing when not solved', () => {
     const nextPuzzle = { width: 2, height: 2, tiles: [1, 2, 0, 3] } as const;
-    (applyMove as ReturnType<typeof vi.fn>).mockReturnValue(nextPuzzle);
-    (isSolved as ReturnType<typeof vi.fn>).mockReturnValue(false);
+
+    const applyMoveMock = vi.mocked(applyMove).mockReturnValue(nextPuzzle);
+
+    const isSolvedMock = vi.mocked(isSolved).mockReturnValue(false);
+
     const usecase = new MoveTile();
 
     const result = usecase.execute(baseGame, 2);
 
-    expect(applyMove).toHaveBeenCalledWith(baseGame.puzzle, 2);
-    expect(isSolved).toHaveBeenCalledWith(nextPuzzle);
+    expect(applyMoveMock).toHaveBeenCalledWith(baseGame.puzzle, 2);
+    expect(isSolvedMock).toHaveBeenCalledWith(nextPuzzle);
     expect(result.puzzle).toBe(nextPuzzle);
     expect(result.status).toBe('playing');
   });
 
   it('applies a move and marks the game as won when solved', () => {
     const nextPuzzle = { width: 2, height: 2, tiles: [1, 2, 3, 0] } as const;
-    (applyMove as ReturnType<typeof vi.fn>).mockReturnValue(nextPuzzle);
-    (isSolved as ReturnType<typeof vi.fn>).mockReturnValue(true);
+
+    const applyMoveMock = vi.mocked(applyMove).mockReturnValue(nextPuzzle);
+
+    const isSolvedMock = vi.mocked(isSolved).mockReturnValue(true);
+
     const usecase = new MoveTile();
 
     const result = usecase.execute(baseGame, 1);
 
-    expect(applyMove).toHaveBeenCalledWith(baseGame.puzzle, 1);
-    expect(isSolved).toHaveBeenCalledWith(nextPuzzle);
+    expect(applyMoveMock).toHaveBeenCalledWith(baseGame.puzzle, 1);
+    expect(isSolvedMock).toHaveBeenCalledWith(nextPuzzle);
     expect(result.status).toBe('won');
     expect(result.puzzle).toBe(nextPuzzle);
   });
