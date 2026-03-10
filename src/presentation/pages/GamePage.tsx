@@ -21,12 +21,7 @@ export function GamePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setGame((prev) => {
-      if (prev?.imageUrl?.startsWith('blob:')) {
-        ports.imageUrlPort.revokeObjectUrl(prev.imageUrl);
-      }
-      return useCases.startGame.execute({ kind: 'upload', file });
-    });
+    setGame(() => useCases.startGame.execute({ kind: 'upload', file }));
 
     // allow re-upload same file
     e.currentTarget.value = '';

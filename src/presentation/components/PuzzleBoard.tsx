@@ -36,7 +36,7 @@ export function PuzzleBoard({
         if (tile === 0) {
           return (
             <div
-              key={index}
+              key="empty"
               style={{
                 background: '#f2f2f2',
                 border: '1px solid #e5e5e5',
@@ -52,7 +52,7 @@ export function PuzzleBoard({
 
         return (
           <button
-            key={index}
+            key={tile}
             onClick={() => onTileClick(index)}
             style={{
               border: '1px solid #e5e5e5',
