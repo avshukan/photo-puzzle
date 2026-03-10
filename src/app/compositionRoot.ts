@@ -4,6 +4,6 @@ import { BrowserImageUrlAdapter } from "../infrastructure/image/BrowserImageUrlA
 const imageUrlPort = new BrowserImageUrlAdapter();
 
 export const useCases = {
-    startGame: new StartGame(imageUrlPort),
-    moveTile: new MoveTile(),
+  startGame: new StartGame(imageUrlPort),
+  moveTile: new MoveTile(),
 };
