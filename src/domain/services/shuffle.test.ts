@@ -42,6 +42,6 @@ describe('shuffleFromSolved', () => {
     expect(state.tiles).toEqual([0, 1, 3, 2]);
     expect(isSolved(state)).toBe(false);
 
-    randomSpy.mockRestore();
+    restoreRandom(randomSpy);
   });
 });
