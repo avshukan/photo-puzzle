@@ -61,8 +61,8 @@ export function PuzzleBoard({
               cursor: 'pointer',
               backgroundImage: `url(${imageUrl})`,
               backgroundRepeat: 'no-repeat',
-              backgroundSize: `${boardW}px ${boardH}px`,
-              backgroundPosition: `${-(srcCol * (TILE_PX + GAP_PX))}px ${-(srcRow * (TILE_PX + GAP_PX))}px`,
+              backgroundSize: `${width * TILE_PX}px ${height * TILE_PX}px`,
+              backgroundPosition: `${-srcCol * TILE_PX}px ${-srcRow * TILE_PX}px`,
             }}
             aria-label={`Tile ${tile}`}
           />

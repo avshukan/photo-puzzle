@@ -1,9 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import type { Game } from '../../application';
 
-// мок compositionRoot
 vi.mock('../../app/compositionRoot', () => {
   const game: Game = {
     imageUrl: 'default',
