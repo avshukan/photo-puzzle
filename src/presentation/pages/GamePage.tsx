@@ -4,6 +4,8 @@ import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 
 export function GamePage() {
+  const [fileName, setFileName] = useState<string>('default');
+
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
   );
@@ -19,7 +21,10 @@ export function GamePage() {
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
+
+    setFileName(file.name);
 
     setGame(() => useCases.startGame.execute({ kind: 'upload', file }));
 
@@ -46,9 +51,27 @@ export function GamePage() {
         }}
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
-        <label style={{ fontSize: 14 }}>
-          <span style={{ display: 'none' }}>file</span>
-          <input type="file" accept="image/*" onChange={onUpload} />
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <input
+            id="upload"
+            type="file"
+            accept="image/*"
+            onChange={onUpload}
+            style={{ display: 'none' }}
+          />
+          <span
+            style={{
+              border: '1px solid #ddd',
+              borderRadius: 8,
+              padding: '6px 10px',
+              cursor: 'pointer',
+              fontSize: 14,
+            }}
+            onClick={() => document.getElementById('upload')?.click()}
+          >
+            Choose file
+          </span>
+          <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName}</span>
         </label>
       </div>
 
@@ -65,13 +88,53 @@ export function GamePage() {
       {game.status === 'won' && (
         <div
           style={{
-            marginTop: 12,
-            padding: 12,
-            border: '1px solid #ddd',
-            borderRadius: 8,
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.35)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
           }}
         >
-          Победа 🎉
+          <div
+            style={{
+              width: 'min(420px, 100%)',
+              background: '#fff',
+              borderRadius: 12,
+              padding: 16,
+              border: '1px solid #e5e5e5',
+            }}
+          >
+            <div style={{ fontSize: 18, fontWeight: 600 }}>Победа 🎉</div>
+            <div style={{ height: 8 }} />
+            <div style={{ fontSize: 14, opacity: 0.8 }}>
+              Загрузите новое изображение, чтобы сыграть ещё раз.
+            </div>
+            <div style={{ height: 12 }} />
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <input
+                id="upload-win"
+                type="file"
+                accept="image/*"
+                onChange={onUpload}
+                style={{ display: 'none' }}
+              />
+              <span
+                style={{
+                  border: '1px solid #ddd',
+                  borderRadius: 8,
+                  padding: '6px 10px',
+                  cursor: 'pointer',
+                  fontSize: 14,
+                }}
+                onClick={() => document.getElementById('upload')?.click()}
+              >
+                Choose file
+              </span>
+              <span style={{ fontSize: 12, opacity: 0.7 }}>{fileName}</span>
+            </label>
+          </div>
         </div>
       )}
     </div>

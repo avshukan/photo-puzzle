@@ -1,4 +1,4 @@
-import { canMove } from "../../domain";
+import { canMove } from '../../domain';
 
 type Props = {
   width: number;
