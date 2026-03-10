@@ -1,9 +1,9 @@
-import type { Game } from "../models/Game";
-import type { ImageUrlPort } from "../ports/ImageUrlPort";
+import type { Game } from '../models/Game';
+import type { ImageUrlPort } from '../ports/ImageUrlPort';
 
 export type StartGameInput =
-  | { kind: "default" }
-  | { kind: "upload"; file: File };
+  | { kind: 'default' }
+  | { kind: 'upload'; file: File };
 
 export class StartGame {
   private readonly imagePort: ImageUrlPort;
@@ -13,6 +13,8 @@ export class StartGame {
   }
 
   execute(_input: StartGameInput): Game {
-    throw new Error(`Not implemented yet : ${JSON.stringify(_input)} & ${JSON.stringify(this.imagePort)}`);
+    throw new Error(
+      `Not implemented yet : ${JSON.stringify(_input)} & ${JSON.stringify(this.imagePort)}`,
+    );
   }
 }

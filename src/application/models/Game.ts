@@ -1,6 +1,6 @@
-import type { PuzzleState } from "../../domain";
+import type { PuzzleState } from '../../domain';
 
-export type GameStatus = "playing" | "won";
+export type GameStatus = 'playing' | 'won';
 
 export type Game = Readonly<{
   imageUrl: string;
