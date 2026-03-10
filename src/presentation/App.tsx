@@ -1,3 +1,5 @@
+import { GamePage } from './pages/GamePage';
+
 export function App() {
-  return <div>Photo Puzzle</div>;
+  return <GamePage />;
 }
