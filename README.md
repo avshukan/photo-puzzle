@@ -1,41 +1,37 @@
-# Photo Puzzle 4×4
+# Photo Puzzle
 
-Browser-based 15 puzzle game built with React and TypeScript.
+15-puzzle game in the browser. Upload your photo or start immediately with a default image.
 
-The user can immediately start playing with a default image or upload a personal photo to solve.
+## Demo
 
-## MVP Features
+https://avshukan.github.io/photo-puzzle/
 
-- Fixed 4×4 grid
-- One empty cell
-- Click on adjacent tile to move
-- Always solvable shuffle
+## MVP
+
+- 4×4 board (15 tiles + 1 empty)
+- Click adjacent tile to move
+- Always solvable shuffle (random legal moves)
 - Default image on first load
-- Upload local image
-- Victory message on solve
-- Minimalistic UI
+- Upload local image to restart the game
+- Victory message on solved
+- No backend. Images stay in the browser.
 
-## Architecture
+## Architecture (Clean Architecture)
 
-The project follows Clean Architecture principles.
+- `src/domain` — puzzle rules (pure functions)
+- `src/application` — use cases (`StartGame`, `MoveTile`)
+- `src/infrastructure` — browser adapters (object URL, default image)
+- `src/presentation` — React UI
 
-- domain — game rules and logic
-- application — use cases
-- infrastructure — browser adapters
-- presentation — React UI
+Domain has no dependency on React/DOM/browser APIs.
 
-Domain layer has no dependency on React or browser APIs.
-
-## Tech Stack
-
-- Vite
-- React
-- TypeScript
-
-## Run locally
-
+## Scripts
 
 ```bash
 npm install
 npm run dev
+npm test
+npm run test:coverage
+npm run build
+npm run preview
 ```
