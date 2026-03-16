@@ -7,4 +7,4 @@
 - Shuffle method: random legal moves from solved state.
 - Control method: click on adjacent tile.
 - No timer, no move counter, no reset button in MVP.
-- Rendering: div tiles with background-image and background-position.
+- Rendering: HTML elements (buttons/divs) with background-image and background-position.
