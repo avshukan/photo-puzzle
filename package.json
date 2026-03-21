@@ -11,6 +11,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview",
+    "prompt": "node scripts/make-prompt.mjs",
+    "prompt:no-src": "node scripts/make-prompt.mjs --no-src",
+    "prompt:full": "node scripts/make-prompt.mjs --full",
     "test": "vitest run",
     "test:cover": "vitest run --coverage"
   },
