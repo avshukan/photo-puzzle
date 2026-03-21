@@ -16,15 +16,13 @@ Legend:
 ## Type meaning
 
 - Value  
-  Пользовательская ценность. Видно глазами. Улучшает UX или добавляет фичу.
+  User-facing value. Visible improvement. Adds or enhances functionality.
 
 - Quality  
-  Улучшает качество без новой фичи.  
-  Примеры: стабильность, ограничения, защита от ошибок, UX-полировка.
+  Improves reliability, stability, or UX polish without adding new features.
 
 - Refactor  
-  Изменение кода без изменения поведения.  
-  Улучшает структуру, читаемость, расширяемость.
+  Internal code changes without changing behavior. Improves structure and maintainability.
 
 ---
 
@@ -85,9 +83,9 @@ _(empty)_
 |  18 | Improve empty tile styling                 | Quality  | Low      | Better visual             |
 |  19 | Limit large image uploads                  | Quality  | Low      | Size / resize             |
 |  20 | Add loading state on upload                | Quality  | Low      | User feedback             |
+|  21 | Add play again button in modal             | Value    | Low      | Restart quickly           |
 |  22 | Add shareable puzzle URL                   | Value    | Low      | Future feature            |
-|  23 | Add play again button in modal             | Value    | Low      | Restart quickly           |
-|  24 | Restore image after reload                 | Quality  | Medium   | Handle blob fallback      |
+|  23 | Restore image after reload                 | Quality  | Medium   | Handle blob fallback      |
 
 ---
 
