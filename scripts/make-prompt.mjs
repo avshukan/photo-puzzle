@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const OUT_FILE = path.join(ROOT, 'prompt.txt');
 const INTRO_FILE = path.join(ROOT, 'scripts', 'ai-intro.md');
 
 const args = new Set(process.argv.slice(2));
@@ -20,7 +19,7 @@ function getArgValue(flag) {
 }
 
 const outArg = getArgValue('--out');
-const outFile = path.join(ROOT, outArg ?? 'prompt.txt');
+const outFile = path.resolve(ROOT, outArg ?? 'prompt.txt');
 
 // Минимальный набор (контекст + ключевой код)
 const INCLUDE_MIN = ['README.md', 'CHANGELOG.md', 'package.json', 'docs'];
