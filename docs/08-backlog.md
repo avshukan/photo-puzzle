@@ -55,7 +55,13 @@ Legend:
 
 ## Doing
 
-_(empty)_
+|  ID | Title                                | Type  | Priority | Notes                  |
+| --: | ------------------------------------ | ----- | -------- | ---------------------- |
+|   4 | Add close button to victory modal    | Value | High     | Allow continue viewing |
+|   7 | Fix board overflow on mobile         | Value | High     | Responsive tile size   |
+|   8 | Persist puzzle state (tiles, status) | Value | High     | Save/restore state     |
+|   9 | Improve file upload UI               | Value | High     | Custom button, layout  |
+|  10 | Add preview original image           | Value | High     | Overlay preview        |
 
 ---
 
@@ -66,13 +72,8 @@ _(empty)_
 |   1 | Add reset / new game button                | Value    | Medium   | Without upload            |
 |   2 | Add move counter                           | Value    | Low      | UI only                   |
 |   3 | Add timer                                  | Value    | Low      | UI only                   |
-|   4 | Add close button to victory modal          | Value    | High     | Allow continue viewing    |
 |   5 | Add board size selector (4×4 / 5×3 / 5×5)  | Value    | Low      | Domain supports           |
 |   6 | Refactor PuzzleBoard styling to CSS module | Refactor | Low      | Optional                  |
-|   7 | Fix board overflow on mobile               | Value    | High     | Responsive tile size      |
-|   8 | Persist puzzle state (tiles, status)       | Value    | High     | Save/restore state        |
-|   9 | Improve file upload UI                     | Value    | High     | Custom button, layout     |
-|  10 | Add preview original image                 | Value    | High     | Overlay preview           |
 |  11 | Add proper favicon                         | Quality  | Medium   | Replace default           |
 |  12 | Split GamePage into smaller components     | Refactor | Medium   | Header, modal             |
 |  13 | Move inline styles to CSS modules          | Quality  | Low      | Remove inline styles      |
