@@ -24,10 +24,14 @@ export function PuzzleBoard({
   const GAP_PX = UI_CONFIG.BOARD.GAP_PX;
 
   useEffect(() => {
-    function updateSize() {
-      if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-      const containerWidth = containerRef.current.clientWidth;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const containerWidth = entry.contentRect.width;
       const gaps = (width - 1) * GAP_PX;
 
       let size = Math.floor((containerWidth - gaps) / width);
@@ -37,12 +41,10 @@ export function PuzzleBoard({
       size = Math.min(UI_CONFIG.TILE.MAX_SIZE, size);
 
       setTileSize(size);
-    }
+    });
 
-    updateSize();
-
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    observer.observe(container);
+    return () => observer.disconnect();
   }, [width, GAP_PX]);
 
   return (
