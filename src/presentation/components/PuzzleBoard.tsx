@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { canMove } from '../../domain';
+import { UI_CONFIG } from '../config/ui';
 
 type Props = {
   width: number;
@@ -8,9 +10,6 @@ type Props = {
   onTileClick: (fromIndex: number) => void;
 };
 
-const TILE_PX = 96;
-const GAP_PX = 2;
-
 export function PuzzleBoard({
   width,
   height,
@@ -18,60 +17,86 @@ export function PuzzleBoard({
   imageUrl,
   onTileClick,
 }: Props) {
-  const boardW = width * TILE_PX + (width - 1) * GAP_PX;
-  const boardH = height * TILE_PX + (height - 1) * GAP_PX;
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
+
+  const GAP_PX = UI_CONFIG.BOARD.GAP_PX;
+
+  useEffect(() => {
+    function updateSize() {
+      if (!containerRef.current) return;
+
+      const containerWidth = containerRef.current.clientWidth;
+      const gaps = (width - 1) * GAP_PX;
+
+      let size = Math.floor((containerWidth - gaps) / width);
+
+      // clamp
+      size = Math.max(UI_CONFIG.TILE.MIN_SIZE, size);
+      size = Math.min(UI_CONFIG.TILE.MAX_SIZE, size);
+
+      setTileSize(size);
+    }
+
+    updateSize();
+
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, [width, GAP_PX]);
 
   return (
-    <div
-      style={{
-        width: boardW,
-        height: boardH,
-        display: 'grid',
-        gridTemplateColumns: `repeat(${width}, ${TILE_PX}px)`,
-        gridTemplateRows: `repeat(${height}, ${TILE_PX}px)`,
-        gap: GAP_PX,
-        userSelect: 'none',
-      }}
-    >
-      {tiles.map((tile, index) => {
-        if (tile === 0) {
+    <div ref={containerRef} style={{ width: '100%' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${width}, ${tileSize}px)`,
+          gridTemplateRows: `repeat(${height}, ${tileSize}px)`,
+          gap: GAP_PX,
+          userSelect: 'none',
+          justifyContent: 'center',
+        }}
+      >
+        {tiles.map((tile, index) => {
+          if (tile === 0) {
+            return (
+              <div
+                key={`empty-${index}`}
+                style={{
+                  background: '#f2f2f2',
+                  border: '1px solid #e5e5e5',
+                  borderRadius: 8,
+                }}
+              />
+            );
+          }
+
+          const tileIndex = tile - 1;
+          const srcRow = Math.floor(tileIndex / width);
+          const srcCol = tileIndex % width;
+
+          const movable = canMove({ width, height, tiles }, index);
+
           return (
-            <div
-              key="empty"
+            <button
+              key={tile}
+              onClick={() => onTileClick(index)}
+              disabled={!movable}
               style={{
-                background: '#f2f2f2',
                 border: '1px solid #e5e5e5',
                 borderRadius: 8,
-                cursor: 'not-allowed',
+                padding: 0,
+                cursor: movable ? 'pointer' : 'not-allowed',
+                backgroundImage: `url(${imageUrl})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: `${width * tileSize}px ${height * tileSize}px`,
+                backgroundPosition: `${-srcCol * tileSize}px ${-srcRow * tileSize}px`,
               }}
+              aria-label={`Tile ${tile}`}
             />
           );
-        }
-
-        const tileIndex = tile - 1; // 0..N-2
-        const srcRow = Math.floor(tileIndex / width);
-        const srcCol = tileIndex % width;
-        const movable = canMove({ width, height, tiles }, index);
-
-        return (
-          <button
-            key={tile}
-            onClick={() => onTileClick(index)}
-            disabled={!movable}
-            style={{
-              border: '1px solid #e5e5e5',
-              borderRadius: 8,
-              padding: 0,
-              cursor: movable ? 'pointer' : 'not-allowed',
-              backgroundImage: `url(${imageUrl})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: `${width * TILE_PX}px ${height * TILE_PX}px`,
-              backgroundPosition: `${-srcCol * TILE_PX}px ${-srcRow * TILE_PX}px`,
-            }}
-            aria-label={`Tile ${tile}`}
-          />
-        );
-      })}
+        })}
+      </div>
     </div>
   );
 }

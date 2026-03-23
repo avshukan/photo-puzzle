@@ -55,13 +55,13 @@ Legend:
 
 ## Doing
 
-|  ID | Title                                | Type  | Priority | Notes                  |
-| --: | ------------------------------------ | ----- | -------- | ---------------------- |
-|   4 | Add close button to victory modal    | Value | High     | Allow continue viewing |
-|   7 | Fix board overflow on mobile         | Value | High     | Responsive tile size   |
-|   8 | Persist puzzle state (tiles, status) | Value | High     | Save/restore state     |
-|   9 | Improve file upload UI               | Value | High     | Custom button, layout  |
-|  10 | Add preview original image           | Value | High     | Overlay preview        |
+|  ID | Title                                | Type    | Priority | Notes                                           |
+| --: | ------------------------------------ | ------- | -------- | ----------------------------------------------- |
+|   4 | Add close button to victory modal    | Value   | High     | Allow continue viewing                          |
+|   8 | Persist puzzle state (tiles, status) | Value   | High     | Save/restore state                              |
+|   9 | Improve file upload UI               | Value   | High     | Custom button, layout                           |
+|  10 | Add preview original image           | Value   | High     | Overlay preview                                 |
+|  24 | Fix double file selection on upload  | Quality | High     | File dialog opens twice, user must pick 2 times |
 
 ---
 
@@ -92,4 +92,8 @@ Legend:
 
 ## Done
 
-_(empty)_
+|  ID | Title                        | Type  | Priority | Notes                |
+| --: | ---------------------------- | ----- | -------- | -------------------- |
+|   7 | Fix board overflow on mobile | Value | High     | Responsive tile size |
+
+---
