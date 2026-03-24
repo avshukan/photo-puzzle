@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
+import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
   const [fileName, setFileName] = useState<string>('');
@@ -43,7 +44,13 @@ export function GamePage() {
   if (!game) return null;
 
   return (
-    <div style={{ padding: 16, maxWidth: 520, margin: '0 auto' }}>
+    <div
+      style={{
+        padding: 16,
+        maxWidth: UI_CONFIG.BOARD.MAX_WIDTH,
+        margin: '0 auto',
+      }}
+    >
       <div
         style={{
           display: 'flex',
