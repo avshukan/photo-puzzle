@@ -6,6 +6,7 @@ import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
   const [fileName, setFileName] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
@@ -22,12 +23,13 @@ export function GamePage() {
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
     setFileName(file.name);
 
     setGame(() => useCases.startGame.execute({ kind: 'upload', file }));
+
+    setIsModalOpen(true);
 
     // allow re-upload same file
     e.currentTarget.value = '';
@@ -94,7 +96,7 @@ export function GamePage() {
         onTileClick={onTileClick}
       />
 
-      {game.status === 'won' && (
+      {game.status === 'won' && isModalOpen && (
         <div
           style={{
             position: 'fixed',
@@ -118,7 +120,7 @@ export function GamePage() {
             <div style={{ fontSize: 18, fontWeight: 600 }}>Победа 🎉</div>
             <div style={{ height: 8 }} />
             <div style={{ fontSize: 14, opacity: 0.8 }}>
-              Загрузите новое изображение, чтобы сыграть ещё раз.
+              Вы можете закрыть окно или загрузить новое изображение.
             </div>
             <div style={{ height: 12 }} />
 
@@ -145,6 +147,20 @@ export function GamePage() {
                 {fileName || 'No file chosen'}
               </span>
             </label>
+
+            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: '1px solid #ddd',
+                  cursor: 'pointer',
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
