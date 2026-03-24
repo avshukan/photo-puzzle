@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
@@ -6,8 +6,6 @@ import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
   const [fileName, setFileName] = useState<string>('');
-  const uploadRef = useRef<HTMLInputElement>(null);
-  const uploadWinRef = useRef<HTMLInputElement>(null);
 
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
@@ -60,9 +58,10 @@ export function GamePage() {
         }}
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
+
+        {/* Upload */}
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input
-            ref={uploadRef}
             type="file"
             accept="image/*"
             onChange={onUpload}
@@ -76,7 +75,6 @@ export function GamePage() {
               cursor: 'pointer',
               fontSize: 14,
             }}
-            onClick={() => uploadRef.current?.click()}
           >
             Choose file
           </span>
@@ -123,9 +121,10 @@ export function GamePage() {
               Загрузите новое изображение, чтобы сыграть ещё раз.
             </div>
             <div style={{ height: 12 }} />
+
+            {/* Upload in modal */}
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
-                ref={uploadWinRef}
                 type="file"
                 accept="image/*"
                 onChange={onUpload}
@@ -139,7 +138,6 @@ export function GamePage() {
                   cursor: 'pointer',
                   fontSize: 14,
                 }}
-                onClick={() => uploadWinRef.current?.click()}
               >
                 Choose file
               </span>

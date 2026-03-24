@@ -29,7 +29,10 @@ export function PuzzleBoard({
     const computeSize = (containerWidth: number) => {
       const gaps = (width - 1) * UI_CONFIG.BOARD.GAP_PX;
       const raw = Math.floor((containerWidth - gaps) / width);
-      return Math.min(UI_CONFIG.TILE.MAX_SIZE, Math.max(UI_CONFIG.TILE.MIN_SIZE, raw));
+      return Math.min(
+        UI_CONFIG.TILE.MAX_SIZE,
+        Math.max(UI_CONFIG.TILE.MIN_SIZE, raw),
+      );
     };
 
     setTileSize(computeSize(container.getBoundingClientRect().width));
@@ -39,7 +42,7 @@ export function PuzzleBoard({
 
       if (!entry) return;
 
-      setTileSize(prev => {
+      setTileSize((prev) => {
         const size = computeSize(entry.contentRect.width);
         return prev === size ? prev : size;
       });
