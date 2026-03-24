@@ -25,27 +25,29 @@ export function PuzzleBoard({
 
   useEffect(() => {
     const container = containerRef.current;
+
     if (!container) return;
 
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
+
       if (!entry) return;
 
       const containerWidth = entry.contentRect.width;
-      const gaps = (width - 1) * GAP_PX;
 
-      let size = Math.floor((containerWidth - gaps) / width);
+      const gaps = (width - 1) * UI_CONFIG.BOARD.GAP_PX;
 
-      // clamp
-      size = Math.max(UI_CONFIG.TILE.MIN_SIZE, size);
-      size = Math.min(UI_CONFIG.TILE.MAX_SIZE, size);
+      const initialSize = Math.floor((containerWidth - gaps) / width);
 
-      setTileSize(size);
+      const size = Math.min(UI_CONFIG.TILE.MAX_SIZE, Math.max(UI_CONFIG.TILE.MIN_SIZE, initialSize));
+
+      setTileSize(prev => (prev === size ? prev : size));
     });
 
     observer.observe(container);
+
     return () => observer.disconnect();
-  }, [width, GAP_PX]);
+  }, [width]);
 
   return (
     <div ref={containerRef} style={{ width: '100%' }}>
