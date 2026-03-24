@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { canMove } from '../../domain';
 import { UI_CONFIG } from '../config/ui';
 
@@ -21,27 +21,28 @@ export function PuzzleBoard({
 
   const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
 
-  const GAP_PX = UI_CONFIG.BOARD.GAP_PX;
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
 
     if (!container) return;
+
+    const computeSize = (containerWidth: number) => {
+      const gaps = (width - 1) * UI_CONFIG.BOARD.GAP_PX;
+      const raw = Math.floor((containerWidth - gaps) / width);
+      return Math.min(UI_CONFIG.TILE.MAX_SIZE, Math.max(UI_CONFIG.TILE.MIN_SIZE, raw));
+    };
+
+    setTileSize(computeSize(container.getBoundingClientRect().width));
 
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
 
       if (!entry) return;
 
-      const containerWidth = entry.contentRect.width;
-
-      const gaps = (width - 1) * UI_CONFIG.BOARD.GAP_PX;
-
-      const initialSize = Math.floor((containerWidth - gaps) / width);
-
-      const size = Math.min(UI_CONFIG.TILE.MAX_SIZE, Math.max(UI_CONFIG.TILE.MIN_SIZE, initialSize));
-
-      setTileSize(prev => (prev === size ? prev : size));
+      setTileSize(prev => {
+        const size = computeSize(entry.contentRect.width);
+        return prev === size ? prev : size;
+      });
     });
 
     observer.observe(container);
@@ -56,7 +57,7 @@ export function PuzzleBoard({
           display: 'grid',
           gridTemplateColumns: `repeat(${width}, ${tileSize}px)`,
           gridTemplateRows: `repeat(${height}, ${tileSize}px)`,
-          gap: GAP_PX,
+          gap: UI_CONFIG.BOARD.GAP_PX,
           userSelect: 'none',
           justifyContent: 'center',
         }}
