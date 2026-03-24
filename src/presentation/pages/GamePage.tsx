@@ -60,6 +60,8 @@ export function GamePage() {
         }}
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
+
+        {/* Upload */}
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input
             ref={uploadRef}
@@ -76,7 +78,6 @@ export function GamePage() {
               cursor: 'pointer',
               fontSize: 14,
             }}
-            onClick={() => uploadRef.current?.click()}
           >
             Choose file
           </span>
@@ -123,6 +124,8 @@ export function GamePage() {
               Загрузите новое изображение, чтобы сыграть ещё раз.
             </div>
             <div style={{ height: 12 }} />
+
+            {/* Upload in modal */}
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 ref={uploadWinRef}
@@ -139,7 +142,6 @@ export function GamePage() {
                   cursor: 'pointer',
                   fontSize: 14,
                 }}
-                onClick={() => uploadWinRef.current?.click()}
               >
                 Choose file
               </span>
