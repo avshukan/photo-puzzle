@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 Versioning follows SemVer.
 
+## [Unreleased]
+
+### Added
+
+- Preview original image overlay: a "Preview" button in the header opens the original puzzle image as a full-screen overlay. Close by clicking the backdrop or pressing Escape.
+
 ## [v0.1.0] - 2026-03-16
 
 ### Added

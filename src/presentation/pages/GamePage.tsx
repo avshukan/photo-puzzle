@@ -7,6 +7,7 @@ import { UI_CONFIG } from '../config/ui';
 export function GamePage() {
   const [fileName, setFileName] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
@@ -22,6 +23,7 @@ export function GamePage() {
   }, [game?.imageUrl]);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
+  const closePreview = useCallback(() => setIsPreviewOpen(false), []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -31,6 +33,15 @@ export function GamePage() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
+
+  useEffect(() => {
+    if (!isPreviewOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closePreview();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isPreviewOpen, closePreview]);
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
@@ -72,29 +83,48 @@ export function GamePage() {
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
 
-        {/* Upload */}
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={onUpload}
-            style={{ display: 'none' }}
-          />
-          <span
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Preview button */}
+          <button
+            type="button"
+            aria-label="Preview original image"
+            onClick={() => setIsPreviewOpen(true)}
             style={{
               border: '1px solid #ddd',
               borderRadius: 8,
               padding: '6px 10px',
               cursor: 'pointer',
               fontSize: 14,
+              background: 'transparent',
             }}
           >
-            Choose file
-          </span>
-          <span style={{ fontSize: 12, opacity: 0.7 }}>
-            {fileName || 'No file chosen'}
-          </span>
-        </label>
+            Preview
+          </button>
+
+          {/* Upload */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onUpload}
+              style={{ display: 'none' }}
+            />
+            <span
+              style={{
+                border: '1px solid #ddd',
+                borderRadius: 8,
+                padding: '6px 10px',
+                cursor: 'pointer',
+                fontSize: 14,
+              }}
+            >
+              Choose file
+            </span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>
+              {fileName || 'No file chosen'}
+            </span>
+          </label>
+        </div>
       </div>
 
       <div style={{ height: 12 }} />
@@ -106,6 +136,37 @@ export function GamePage() {
         imageUrl={game.imageUrl}
         onTileClick={onTileClick}
       />
+
+      {isPreviewOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Preview original image"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            zIndex: 10,
+          }}
+          onClick={closePreview}
+        >
+          <img
+            src={game.imageUrl}
+            alt="Original puzzle image"
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              borderRadius: 8,
+              boxShadow: '0 4px 32px rgba(0,0,0,0.5)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {game.status === 'won' && isModalOpen && (
         <div
