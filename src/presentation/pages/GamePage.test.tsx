@@ -70,37 +70,4 @@ describe('GamePage', () => {
     ).toBeInTheDocument();
     expect(screen.getByAltText('Original puzzle image')).toBeInTheDocument();
   });
-
-  it('closes preview overlay when backdrop is clicked', async () => {
-    render(<GamePage />);
-
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Preview original image' }),
-    );
-
-    const overlay = screen.getByRole('dialog', { name: 'Preview original image' });
-    await userEvent.click(overlay);
-
-    expect(
-      screen.queryByRole('dialog', { name: 'Preview original image' }),
-    ).not.toBeInTheDocument();
-  });
-
-  it('closes preview overlay when Escape key is pressed', async () => {
-    render(<GamePage />);
-
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Preview original image' }),
-    );
-
-    expect(
-      screen.getByRole('dialog', { name: 'Preview original image' }),
-    ).toBeInTheDocument();
-
-    await userEvent.keyboard('{Escape}');
-
-    expect(
-      screen.queryByRole('dialog', { name: 'Preview original image' }),
-    ).not.toBeInTheDocument();
-  });
 });

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
+import { PreviewOverlay } from '../components/PreviewOverlay';
 import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
@@ -23,7 +24,6 @@ export function GamePage() {
   }, [game?.imageUrl]);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
-  const closePreview = useCallback(() => setIsPreviewOpen(false), []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -33,15 +33,6 @@ export function GamePage() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
-
-  useEffect(() => {
-    if (!isPreviewOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closePreview();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isPreviewOpen, closePreview]);
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
@@ -138,34 +129,10 @@ export function GamePage() {
       />
 
       {isPreviewOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Preview original image"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
-            zIndex: 10,
-          }}
-          onClick={closePreview}
-        >
-          <img
-            src={game.imageUrl}
-            alt="Original puzzle image"
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '90vh',
-              borderRadius: 8,
-              boxShadow: '0 4px 32px rgba(0,0,0,0.5)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+        <PreviewOverlay
+          imageUrl={game.imageUrl}
+          onClose={() => setIsPreviewOpen(false)}
+        />
       )}
 
       {game.status === 'won' && isModalOpen && (
