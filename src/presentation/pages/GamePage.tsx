@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
@@ -20,6 +20,17 @@ export function GamePage() {
       }
     };
   }, [game?.imageUrl]);
+
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isModalOpen, closeModal]);
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
@@ -98,6 +109,9 @@ export function GamePage() {
 
       {game.status === 'won' && isModalOpen && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Победа"
           style={{
             position: 'fixed',
             inset: 0,
@@ -107,6 +121,7 @@ export function GamePage() {
             justifyContent: 'center',
             padding: 16,
           }}
+          onClick={closeModal}
         >
           <div
             style={{
@@ -116,6 +131,7 @@ export function GamePage() {
               padding: 16,
               border: '1px solid #e5e5e5',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             <div style={{ fontSize: 18, fontWeight: 600 }}>Победа 🎉</div>
             <div style={{ height: 8 }} />
@@ -150,7 +166,9 @@ export function GamePage() {
 
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button
-                onClick={() => setIsModalOpen(false)}
+                autoFocus
+                type="button"
+                onClick={closeModal}
                 style={{
                   padding: '6px 10px',
                   borderRadius: 8,
@@ -158,7 +176,7 @@ export function GamePage() {
                   cursor: 'pointer',
                 }}
               >
-                Close
+                Закрыть
               </button>
             </div>
           </div>
