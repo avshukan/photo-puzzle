@@ -10,6 +10,7 @@ describe('PreviewOverlay', () => {
     expect(
       screen.getByRole('dialog', { name: 'Preview original image' }),
     ).toBeInTheDocument();
+
     expect(screen.getByAltText('Original puzzle image')).toHaveAttribute(
       'src',
       'test-image.jpg',
@@ -18,6 +19,7 @@ describe('PreviewOverlay', () => {
 
   it('calls onClose when backdrop is clicked', async () => {
     const onClose = vi.fn();
+
     render(<PreviewOverlay imageUrl="test-image.jpg" onClose={onClose} />);
 
     await userEvent.click(
@@ -29,6 +31,7 @@ describe('PreviewOverlay', () => {
 
   it('does not call onClose when image is clicked', async () => {
     const onClose = vi.fn();
+
     render(<PreviewOverlay imageUrl="test-image.jpg" onClose={onClose} />);
 
     await userEvent.click(screen.getByAltText('Original puzzle image'));
@@ -38,10 +41,21 @@ describe('PreviewOverlay', () => {
 
   it('calls onClose when Escape key is pressed', async () => {
     const onClose = vi.fn();
+
     render(<PreviewOverlay imageUrl="test-image.jpg" onClose={onClose} />);
 
     await userEvent.keyboard('{Escape}');
 
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call onClose when not Escape key is pressed', async () => {
+    const onClose = vi.fn();
+
+    render(<PreviewOverlay imageUrl="test-image.jpg" onClose={onClose} />);
+
+    await userEvent.keyboard('{Enter}');
+
+    expect(onClose).toHaveBeenCalledTimes(0);
   });
 });

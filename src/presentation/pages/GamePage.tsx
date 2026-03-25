@@ -7,7 +7,9 @@ import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
   const [fileName, setFileName] = useState<string>('');
+
   const [isModalOpen, setIsModalOpen] = useState(true);
+
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [game, setGame] = useState<Game | null>(() =>
@@ -27,15 +29,19 @@ export function GamePage() {
 
   useEffect(() => {
     if (!isModalOpen) return;
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
     };
+
     window.addEventListener('keydown', onKeyDown);
+
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     setFileName(file.name);
