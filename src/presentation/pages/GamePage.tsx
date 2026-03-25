@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
@@ -21,7 +21,7 @@ export function GamePage() {
     };
   }, [game?.imageUrl]);
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -30,7 +30,7 @@ export function GamePage() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isModalOpen]);
+  }, [isModalOpen, closeModal]);
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
@@ -166,6 +166,7 @@ export function GamePage() {
 
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button
+                autoFocus
                 type="button"
                 onClick={closeModal}
                 style={{
