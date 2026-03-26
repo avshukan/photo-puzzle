@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
-import { useCases, ports } from '../../app/compositionRoot';
+import { ports, gameService } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 import { PreviewOverlay } from '../components/PreviewOverlay';
 import { UploadButton } from '../components/UploadButton';
@@ -8,17 +8,11 @@ import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
   const [isModalOpen, setIsModalOpen] = useState(true);
-
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-
   const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
+  const [game, setGame] = useState<Game | null>(() => gameService.init());
 
-  const [game, setGame] = useState<Game | null>(() =>
-    useCases.startGame.execute({ kind: 'default' }),
-  );
-
-  const closeModal = useCallback(() => setIsModalOpen(false), []);
-
+  // revoke blob urls on unmount
   useEffect(() => {
     return () => {
       if (game?.imageUrl?.startsWith('blob:')) {
@@ -26,6 +20,8 @@ export function GamePage() {
       }
     };
   }, [game?.imageUrl]);
+
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -40,15 +36,17 @@ export function GamePage() {
   }, [isModalOpen, closeModal]);
 
   const handleUpload = (file: File) => {
-    setGame(() => useCases.startGame.execute({ kind: 'upload', file }));
+    const next = gameService.startWithUpload(file);
+
+    setGame(next);
+
     setIsModalOpen(true);
+
     setIsPreviewOpen(false);
   };
 
   const onTileClick = (fromIndex: number) => {
-    setGame((prev) =>
-      prev ? useCases.moveTile.execute(prev, fromIndex) : prev,
-    );
+    setGame((prev) => (prev ? gameService.move(prev, fromIndex) : prev));
   };
 
   if (!game) return null;

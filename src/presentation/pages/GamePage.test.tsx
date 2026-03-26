@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import type { Game } from '../../application';
 import { GamePage } from './GamePage';
-import { useCases } from '../../app/compositionRoot';
+import { gameService } from '../../app/compositionRoot';
 import userEvent from '@testing-library/user-event';
 
 vi.mock('../../app/compositionRoot', () => {
@@ -17,9 +17,11 @@ vi.mock('../../app/compositionRoot', () => {
   };
 
   return {
-    useCases: {
-      startGame: { execute: vi.fn(() => game) },
-      moveTile: { execute: vi.fn(() => game) },
+    gameService: {
+      init: vi.fn(() => game),
+      startWithUpload: vi.fn(() => game),
+      move: vi.fn(() => game),
+      reset: vi.fn(),
     },
     ports: {
       imageUrlPort: { revokeObjectUrl: vi.fn() },
@@ -31,9 +33,7 @@ describe('GamePage', () => {
   it('starts with default game on mount', async () => {
     render(<GamePage />);
 
-    expect(useCases.startGame.execute).toHaveBeenCalledWith({
-      kind: 'default',
-    });
+    expect(gameService.init).toHaveBeenCalled();
 
     expect(await screen.findByLabelText('Tile 1')).toBeInTheDocument();
   });
@@ -49,10 +49,7 @@ describe('GamePage', () => {
 
     await userEvent.upload(input, file);
 
-    expect(useCases.startGame.execute).toHaveBeenLastCalledWith({
-      kind: 'upload',
-      file,
-    });
+    expect(gameService.startWithUpload).toHaveBeenLastCalledWith(file);
   });
 
   it('shows preview overlay when Preview button is clicked', async () => {
