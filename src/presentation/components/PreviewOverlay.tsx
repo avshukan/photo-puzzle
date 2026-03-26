@@ -7,7 +7,12 @@ type Props = {
   boardHeight?: number;
 };
 
-export function PreviewOverlay({ imageUrl, onClose, boardWidth, boardHeight }: Props) {
+export function PreviewOverlay({
+  imageUrl,
+  onClose,
+  boardWidth,
+  boardHeight,
+}: Props) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
