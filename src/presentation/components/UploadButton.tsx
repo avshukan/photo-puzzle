@@ -11,11 +11,7 @@ export function UploadButton({ onUpload, label = 'Upload image' }: Props) {
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
 
-    console.log('File selected:', file);
-
     if (!file) return;
-
-    console.log('Calling onUpload with file:', file);
 
     onUpload(file);
 
