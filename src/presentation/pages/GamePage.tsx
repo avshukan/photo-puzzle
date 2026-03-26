@@ -12,6 +12,8 @@ export function GamePage() {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
+
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
   );
@@ -132,12 +134,21 @@ export function GamePage() {
         tiles={game.puzzle.tiles}
         imageUrl={game.imageUrl}
         onTileClick={onTileClick}
+        onTileSizeChange={setTileSize}
       />
 
       {isPreviewOpen && (
         <PreviewOverlay
           imageUrl={game.imageUrl}
           onClose={() => setIsPreviewOpen(false)}
+          boardWidth={
+            game.puzzle.width * tileSize +
+            (game.puzzle.width - 1) * UI_CONFIG.BOARD.GAP_PX
+          }
+          boardHeight={
+            game.puzzle.height * tileSize +
+            (game.puzzle.height - 1) * UI_CONFIG.BOARD.GAP_PX
+          }
         />
       )}
 

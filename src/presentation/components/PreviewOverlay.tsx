@@ -3,9 +3,11 @@ import { useEffect } from 'react';
 type Props = {
   imageUrl: string;
   onClose: () => void;
+  boardWidth?: number;
+  boardHeight?: number;
 };
 
-export function PreviewOverlay({ imageUrl, onClose }: Props) {
+export function PreviewOverlay({ imageUrl, onClose, boardWidth, boardHeight }: Props) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -37,8 +39,10 @@ export function PreviewOverlay({ imageUrl, onClose }: Props) {
         src={imageUrl}
         alt="Original puzzle image"
         style={{
-          maxWidth: '90vw',
-          maxHeight: '90vh',
+          width: boardWidth,
+          height: boardHeight,
+          maxWidth: boardWidth ?? '90vw',
+          maxHeight: boardHeight ?? '90vh',
           borderRadius: 8,
           boxShadow: '0 4px 32px rgba(0,0,0,0.5)',
         }}

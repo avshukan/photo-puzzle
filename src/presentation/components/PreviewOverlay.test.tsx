@@ -58,4 +58,19 @@ describe('PreviewOverlay', () => {
 
     expect(onClose).toHaveBeenCalledTimes(0);
   });
+
+  it('applies board dimensions to the image when provided', () => {
+    render(
+      <PreviewOverlay
+        imageUrl="test-image.jpg"
+        onClose={vi.fn()}
+        boardWidth={292}
+        boardHeight={292}
+      />,
+    );
+
+    const img = screen.getByAltText('Original puzzle image');
+
+    expect(img).toHaveStyle({ width: '292px', height: '292px' });
+  });
 });
