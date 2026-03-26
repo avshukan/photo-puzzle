@@ -57,7 +57,7 @@ Legend:
 
 |  ID | Title =========================================== | Type === | Priority | Notes ============================== |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
-|   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
+|  23 | Restore image after reload                        | Value    | High     | Handle blob fallback                 |
 
 ---
 
@@ -65,7 +65,7 @@ Legend:
 
 |  ID | Title =========================================== | Type === | Priority | Notes ============================== |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
-|   1 | Add reset / new game button                       | Value    | Medium   | Without upload                       |
+|   1 | Add reset / new game button                       | Value    | Medium   | Use GameService.reset()              |
 |   2 | Add move counter                                  | Value    | Low      | UI only                              |
 |   3 | Add timer                                         | Value    | Low      | UI only                              |
 |   5 | Add board size selector (4×4 / 5×3 / 5×5)         | Value    | Low      | Domain supports                      |
@@ -82,7 +82,9 @@ Legend:
 |  20 | Add loading state on upload                       | Quality  | Low      | User feedback                        |
 |  21 | Add play again button in modal                    | Value    | Low      | Restart quickly                      |
 |  22 | Add shareable puzzle URL                          | Value    | Low      | Future feature                       |
-|  23 | Restore image after reload                        | Quality  | Medium   | Handle blob fallback                 |
+|  25 | Validate persisted game schema on load            | Quality  | Medium   | Handle schema changes                |
+|  26 | Export component props types                      | Quality  | Medium   | Reuse props types across components  |
+|  27 | Use component types in tests and mocks            | Quality  | Medium   | Improve test type safety             |
 
 ---
 
@@ -90,6 +92,7 @@ Legend:
 
 |  ID | Title =========================================== | Type === | Priority | Notes ============================== |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
+|   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |
 |  10 | Add preview original image                        | Value    | High     | Overlay preview                      |
 |   4 | Add close button to victory modal                 | Value    | High     | Allow continue viewing               |
