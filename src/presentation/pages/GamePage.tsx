@@ -3,11 +3,10 @@ import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 import { PreviewOverlay } from '../components/PreviewOverlay';
+import { UploadButton } from '../components/UploadButton';
 import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
-  const [fileName, setFileName] = useState<string>('');
-
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -18,7 +17,8 @@ export function GamePage() {
     useCases.startGame.execute({ kind: 'default' }),
   );
 
-  // revoke blob urls on unmount
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
+
   useEffect(() => {
     return () => {
       if (game?.imageUrl?.startsWith('blob:')) {
@@ -26,8 +26,6 @@ export function GamePage() {
       }
     };
   }, [game?.imageUrl]);
-
-  const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -41,19 +39,10 @@ export function GamePage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
 
-  const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    setFileName(file.name);
-
+  const handleUpload = (file: File) => {
     setGame(() => useCases.startGame.execute({ kind: 'upload', file }));
-
     setIsModalOpen(true);
-
-    // allow re-upload same file
-    e.currentTarget.value = '';
+    setIsPreviewOpen(false);
   };
 
   const onTileClick = (fromIndex: number) => {
@@ -72,6 +61,7 @@ export function GamePage() {
         margin: '0 auto',
       }}
     >
+      {/* Header */}
       <div
         style={{
           display: 'flex',
@@ -82,11 +72,9 @@ export function GamePage() {
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Preview button */}
+        <div style={{ display: 'flex', gap: 8 }}>
           <button
             type="button"
-            aria-label="Preview original image"
             onClick={() => setIsPreviewOpen(true)}
             style={{
               border: '1px solid #ddd',
@@ -100,29 +88,7 @@ export function GamePage() {
             Preview
           </button>
 
-          {/* Upload */}
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={onUpload}
-              style={{ display: 'none' }}
-            />
-            <span
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: 8,
-                padding: '6px 10px',
-                cursor: 'pointer',
-                fontSize: 14,
-              }}
-            >
-              Choose file
-            </span>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>
-              {fileName || 'No file chosen'}
-            </span>
-          </label>
+          <UploadButton onUpload={handleUpload} />
         </div>
       </div>
 
@@ -137,6 +103,7 @@ export function GamePage() {
         onTileSizeChange={setTileSize}
       />
 
+      {/* Preview */}
       {isPreviewOpen && (
         <PreviewOverlay
           imageUrl={game.imageUrl}
@@ -152,11 +119,12 @@ export function GamePage() {
         />
       )}
 
+      {/* Victory modal */}
       {game.status === 'won' && isModalOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Победа"
+          aria-label="Victory"
           style={{
             position: 'fixed',
             inset: 0,
@@ -178,38 +146,19 @@ export function GamePage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ fontSize: 18, fontWeight: 600 }}>Победа 🎉</div>
+            <div style={{ fontSize: 18, fontWeight: 600 }}>Victory 🎉</div>
+
             <div style={{ height: 8 }} />
+
             <div style={{ fontSize: 14, opacity: 0.8 }}>
-              Вы можете закрыть окно или загрузить новое изображение.
+              You can close this window or upload a new image.
             </div>
+
             <div style={{ height: 12 }} />
 
-            {/* Upload in modal */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={onUpload}
-                style={{ display: 'none' }}
-              />
-              <span
-                style={{
-                  border: '1px solid #ddd',
-                  borderRadius: 8,
-                  padding: '6px 10px',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                }}
-              >
-                Choose file
-              </span>
-              <span style={{ fontSize: 12, opacity: 0.7 }}>
-                {fileName || 'No file chosen'}
-              </span>
-            </label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <UploadButton onUpload={handleUpload} label="Upload new" />
 
-            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button
                 autoFocus
                 type="button"
@@ -221,7 +170,7 @@ export function GamePage() {
                   cursor: 'pointer',
                 }}
               >
-                Закрыть
+                Close
               </button>
             </div>
           </div>

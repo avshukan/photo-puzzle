@@ -27,7 +27,7 @@ export function PreviewOverlay({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Preview original image"
+      aria-label="Preview"
       style={{
         position: 'fixed',
         inset: 0,
