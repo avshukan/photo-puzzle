@@ -1,24 +1,19 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import type { Game } from '../models/Game';
+import type { StartGame } from '../usecases/StartGame';
+import type { MoveTile } from '../usecases/MoveTile';
+import type { GameStoragePort } from '../ports/GameStoragePort';
 import { GameService } from './GameService';
 
 describe('GameService', () => {
-  type StorageMock = {
-    save: Mock<(game: unknown) => void>;
-    load: Mock<() => unknown>;
-    clear: Mock<() => void>;
-  };
-
-  let startGame: GameService['startGame'];
-  let startGameExecute: Mock<GameService['startGame']['execute']>;
-  let moveTile: GameService['moveTile'];
-  let moveTileExecute: Mock<GameService['moveTile']['execute']>;
-  let loadGame: GameService['loadGame'];
-  let loadGameExecute: Mock<GameService['loadGame']['execute']>;
-  let storage: GameService['storage'];
-  let storageSave: Mock<StorageMock['save']>;
-  let storageLoad: Mock<StorageMock['load']>;
-  let storageClear: Mock<StorageMock['clear']>;
+  let startGameExecute: Mock<StartGame['execute']>;
+  let startGame: StartGame;
+  let moveTileExecute: Mock<MoveTile['execute']>;
+  let moveTile: MoveTile;
+  let storageSave: Mock<GameStoragePort['save']>;
+  let storageLoad: Mock<GameStoragePort['load']>;
+  let storageClear: Mock<GameStoragePort['clear']>;
+  let storage: GameStoragePort;
 
   let service: GameService;
 
@@ -37,17 +32,12 @@ describe('GameService', () => {
         createObjectUrl: vi.fn(),
         revokeObjectUrl: vi.fn(),
       },
-    } as unknown as GameService['startGame'];
+    } as unknown as StartGame;
 
     moveTileExecute = vi.fn();
     moveTile = {
       execute: moveTileExecute,
-    } as unknown as GameService['moveTile'];
-
-    loadGameExecute = vi.fn();
-    loadGame = {
-      execute: loadGameExecute,
-    } as unknown as GameService['loadGame'];
+    } as unknown as MoveTile;
 
     storageSave = vi.fn();
     storageLoad = vi.fn();
@@ -56,13 +46,13 @@ describe('GameService', () => {
       save: storageSave,
       load: storageLoad,
       clear: storageClear,
-    } as GameService['storage'];
+    } as GameStoragePort;
 
-    service = new GameService(startGame, moveTile, loadGame, storage);
+    service = new GameService(startGame, moveTile, storage);
   });
 
   it('init() returns saved game if exists', () => {
-    loadGameExecute.mockReturnValue(game);
+    storageLoad.mockReturnValue(game);
 
     const result = service.init();
 
@@ -72,7 +62,7 @@ describe('GameService', () => {
   });
 
   it('init() starts new game if no saved game', () => {
-    loadGameExecute.mockReturnValue(null);
+    storageLoad.mockReturnValue(null);
     startGameExecute.mockReturnValue(game);
 
     const result = service.init();
