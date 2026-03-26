@@ -3,6 +3,7 @@ import type { Game } from '../models/Game';
 import type { StartGame } from '../usecases/StartGame';
 import type { MoveTile } from '../usecases/MoveTile';
 import type { GameStoragePort } from '../ports/GameStoragePort';
+import type { ImageUrlPort } from '../ports/ImageUrlPort';
 import { GameService } from './GameService';
 
 describe('GameService', () => {
@@ -14,6 +15,7 @@ describe('GameService', () => {
   let storageLoad: Mock<GameStoragePort['load']>;
   let storageClear: Mock<GameStoragePort['clear']>;
   let storage: GameStoragePort;
+  let imageUrlPort: ImageUrlPort;
 
   let service: GameService;
 
@@ -29,8 +31,7 @@ describe('GameService', () => {
       execute: startGameExecute,
       imagePort: {
         getDefaultImageUrl: vi.fn(),
-        createObjectUrl: vi.fn(),
-        revokeObjectUrl: vi.fn(),
+        readAsDataUrl: vi.fn(),
       },
     } as unknown as StartGame;
 
@@ -48,7 +49,12 @@ describe('GameService', () => {
       clear: storageClear,
     } as GameStoragePort;
 
-    service = new GameService(startGame, moveTile, storage);
+    imageUrlPort = {
+      getDefaultImageUrl: vi.fn(),
+      readAsDataUrl: vi.fn(),
+    };
+
+    service = new GameService(startGame, moveTile, storage, imageUrlPort);
   });
 
   it('init() returns saved game if exists', () => {
@@ -72,16 +78,19 @@ describe('GameService', () => {
     expect(result).toBe(game);
   });
 
-  it('startWithUpload() starts game and saves it', () => {
+  it('startWithUpload() reads data URL, starts game and saves it', async () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
+    const dataUrl = 'data:image/png;base64,abc';
 
+    vi.mocked(imageUrlPort.readAsDataUrl).mockResolvedValue(dataUrl);
     startGameExecute.mockReturnValue(game);
 
-    const result = service.startWithUpload(file);
+    const result = await service.startWithUpload(file);
 
+    expect(imageUrlPort.readAsDataUrl).toHaveBeenCalledWith(file);
     expect(startGameExecute).toHaveBeenCalledWith({
       kind: 'upload',
-      file,
+      imageUrl: dataUrl,
     });
     expect(storageSave).toHaveBeenCalledWith(game);
     expect(result).toBe(game);

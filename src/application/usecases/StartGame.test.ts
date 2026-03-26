@@ -13,8 +13,7 @@ describe('StartGame', () => {
   it('starts a default game using the default image and shuffled puzzle', () => {
     const imagePort = {
       getDefaultImageUrl: vi.fn().mockReturnValue('default-url'),
-      createObjectUrl: vi.fn(),
-      revokeObjectUrl: vi.fn(),
+      readAsDataUrl: vi.fn(),
     };
 
     const shuffleSpy = vi
@@ -26,7 +25,7 @@ describe('StartGame', () => {
     const game = startGame.execute({ kind: 'default' });
 
     expect(imagePort.getDefaultImageUrl).toHaveBeenCalledTimes(1);
-    expect(imagePort.createObjectUrl).not.toHaveBeenCalled();
+    expect(imagePort.readAsDataUrl).not.toHaveBeenCalled();
     expect(shuffleSpy).toHaveBeenCalledWith(4, 4, 300);
     expect(game).toEqual({
       imageUrl: 'default-url',
@@ -37,12 +36,10 @@ describe('StartGame', () => {
     shuffleSpy.mockRestore();
   });
 
-  it('starts a game from an uploaded file using a created object URL', () => {
-    const mockFile = new File(['data'], 'photo.png', { type: 'image/png' });
+  it('starts a game from an uploaded file using a data URL', () => {
     const imagePort = {
       getDefaultImageUrl: vi.fn(),
-      createObjectUrl: vi.fn().mockReturnValue('object-url'),
-      revokeObjectUrl: vi.fn(),
+      readAsDataUrl: vi.fn().mockResolvedValue('data:image/png;base64,abc'),
     };
 
     const shuffleSpy = vi
@@ -51,12 +48,11 @@ describe('StartGame', () => {
 
     const startGame = new StartGame(imagePort);
 
-    const game = startGame.execute({ kind: 'upload', file: mockFile });
+    const game = startGame.execute({ kind: 'upload', imageUrl: 'data:image/png;base64,abc' });
 
-    expect(imagePort.createObjectUrl).toHaveBeenCalledWith(mockFile);
     expect(imagePort.getDefaultImageUrl).not.toHaveBeenCalled();
     expect(shuffleSpy).toHaveBeenCalledWith(4, 4, 300);
-    expect(game.imageUrl).toBe('object-url');
+    expect(game.imageUrl).toBe('data:image/png;base64,abc');
     expect(game.puzzle).toBe(puzzleMock);
     expect(game.status).toBe('playing');
 

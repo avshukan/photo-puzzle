@@ -6,15 +6,12 @@ export class BrowserImageUrlAdapter implements ImageUrlPort {
     return defaultImage;
   }
 
-  createObjectUrl(file: File): ImageUrl {
-    return URL.createObjectURL(file);
-  }
-
-  revokeObjectUrl(url: ImageUrl): void {
-    try {
-      URL.revokeObjectURL(url);
-    } catch {
-      // ignore
-    }
+  readAsDataUrl(file: File): Promise<ImageUrl> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   }
 }

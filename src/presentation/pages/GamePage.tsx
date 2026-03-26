@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
-import { ports, gameService } from '../../app/compositionRoot';
+import { gameService } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 import { PreviewOverlay } from '../components/PreviewOverlay';
 import { UploadButton } from '../components/UploadButton';
@@ -11,15 +11,6 @@ export function GamePage() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
-
-  // revoke blob urls on unmount
-  useEffect(() => {
-    return () => {
-      if (game?.imageUrl?.startsWith('blob:')) {
-        ports.imageUrlPort.revokeObjectUrl(game.imageUrl);
-      }
-    };
-  }, [game?.imageUrl]);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
@@ -35,8 +26,8 @@ export function GamePage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
 
-  const handleUpload = (file: File) => {
-    const next = gameService.startWithUpload(file);
+  const handleUpload = async (file: File) => {
+    const next = await gameService.startWithUpload(file);
 
     setGame(next);
 

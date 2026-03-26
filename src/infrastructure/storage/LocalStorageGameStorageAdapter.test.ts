@@ -1,21 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { Game } from '../../application/models/Game';
-import type { ImageUrlPort } from '../../application/ports/ImageUrlPort';
 import { LocalStorageGameStorageAdapter } from './LocalStorageGameStorageAdapter';
 
 describe('LocalStorageGameStorageAdapter', () => {
   const STORAGE_KEY = 'photo-puzzle.game';
 
   const createAdapter = () => {
-    const imagePort: ImageUrlPort = {
-      getDefaultImageUrl: vi.fn(() => 'default-image'),
-      createObjectUrl: vi.fn(),
-      revokeObjectUrl: vi.fn(),
-    };
+    const adapter = new LocalStorageGameStorageAdapter();
 
-    const adapter = new LocalStorageGameStorageAdapter(imagePort);
-
-    return { adapter, imagePort };
+    return { adapter };
   };
 
   beforeEach(() => {
@@ -73,12 +66,12 @@ describe('LocalStorageGameStorageAdapter', () => {
     expect(result).toBeNull();
   });
 
-  it('applies fallback for blob imageUrl', () => {
-    const { adapter, imagePort } = createAdapter();
+  it('loads game with data URL imageUrl from localStorage', () => {
+    const { adapter } = createAdapter();
 
     const game: Game = {
       puzzle: { width: 4, height: 4, tiles: [1, 2, 3] as const },
-      imageUrl: 'blob:123',
+      imageUrl: 'data:image/png;base64,abc123',
       status: 'playing',
     };
 
@@ -86,12 +79,7 @@ describe('LocalStorageGameStorageAdapter', () => {
 
     const result = adapter.load();
 
-    expect(imagePort.getDefaultImageUrl).toHaveBeenCalled();
-
-    expect(result).toEqual({
-      ...game,
-      imageUrl: 'default-image',
-    });
+    expect(result).toEqual(game);
   });
 
   it('clears storage', () => {

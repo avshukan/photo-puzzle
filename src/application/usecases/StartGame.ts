@@ -1,10 +1,10 @@
 import { shuffleFromSolved } from '../../domain';
 import type { Game } from '../models/Game';
-import type { ImageUrlPort } from '../ports/ImageUrlPort';
+import type { ImageUrlPort, ImageUrl } from '../ports/ImageUrlPort';
 
 export type StartGameInput =
   | { kind: 'default' }
-  | { kind: 'upload'; file: File };
+  | { kind: 'upload'; imageUrl: ImageUrl };
 
 export class StartGame {
   private readonly imagePort: ImageUrlPort;
@@ -17,7 +17,7 @@ export class StartGame {
     const imageUrl =
       input.kind === 'default'
         ? this.imagePort.getDefaultImageUrl()
-        : this.imagePort.createObjectUrl(input.file);
+        : input.imageUrl;
 
     // TODO: make it configurable
     const puzzle = shuffleFromSolved(4, 4, 300);

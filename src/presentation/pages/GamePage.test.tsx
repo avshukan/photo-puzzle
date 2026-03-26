@@ -19,12 +19,9 @@ vi.mock('../../app/compositionRoot', () => {
   return {
     gameService: {
       init: vi.fn(() => game),
-      startWithUpload: vi.fn(() => game),
+      startWithUpload: vi.fn(() => Promise.resolve(game)),
       move: vi.fn(() => game),
       reset: vi.fn(),
-    },
-    ports: {
-      imageUrlPort: { revokeObjectUrl: vi.fn() },
     },
   };
 });
