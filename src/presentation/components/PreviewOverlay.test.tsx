@@ -7,9 +7,7 @@ describe('PreviewOverlay', () => {
   it('renders the original image and dialog', () => {
     render(<PreviewOverlay imageUrl="test-image.jpg" onClose={vi.fn()} />);
 
-    expect(
-      screen.getByRole('dialog', { name: 'Preview original image' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Preview' })).toBeInTheDocument();
 
     expect(screen.getByAltText('Original puzzle image')).toHaveAttribute(
       'src',
@@ -22,9 +20,7 @@ describe('PreviewOverlay', () => {
 
     render(<PreviewOverlay imageUrl="test-image.jpg" onClose={onClose} />);
 
-    await userEvent.click(
-      screen.getByRole('dialog', { name: 'Preview original image' }),
-    );
+    await userEvent.click(screen.getByRole('dialog', { name: 'Preview' }));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });

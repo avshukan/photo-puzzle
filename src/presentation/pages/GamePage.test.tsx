@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import type { Game } from '../../application';
+import { GamePage } from './GamePage';
+import { useCases } from '../../app/compositionRoot';
+import userEvent from '@testing-library/user-event';
 
 vi.mock('../../app/compositionRoot', () => {
   const game: Game = {
@@ -24,10 +27,6 @@ vi.mock('../../app/compositionRoot', () => {
   };
 });
 
-import { GamePage } from './GamePage';
-import { useCases } from '../../app/compositionRoot';
-import userEvent from '@testing-library/user-event';
-
 describe('GamePage', () => {
   it('starts with default game on mount', async () => {
     render(<GamePage />);
@@ -42,7 +41,9 @@ describe('GamePage', () => {
   it('starts game from uploaded file', async () => {
     render(<GamePage />);
 
-    const input = screen.getByLabelText(/file/i) as HTMLInputElement;
+    const input = screen.getByLabelText(
+      /upload image input/i,
+    ) as HTMLInputElement;
 
     const file = new File(['x'], 'photo.png', { type: 'image/png' });
 
@@ -58,16 +59,13 @@ describe('GamePage', () => {
     render(<GamePage />);
 
     expect(
-      screen.queryByRole('dialog', { name: 'Preview original image' }),
+      screen.queryByRole('dialog', { name: 'Preview' }),
     ).not.toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Preview original image' }),
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Preview' }));
 
-    expect(
-      screen.getByRole('dialog', { name: 'Preview original image' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Preview' })).toBeInTheDocument();
+
     expect(screen.getByAltText('Original puzzle image')).toBeInTheDocument();
   });
 });
