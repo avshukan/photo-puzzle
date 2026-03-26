@@ -8,6 +8,7 @@ type Props = {
   tiles: readonly number[];
   imageUrl: string;
   onTileClick: (fromIndex: number) => void;
+  onTileSizeChange?: (tileSize: number) => void;
 };
 
 export function PuzzleBoard({
@@ -16,6 +17,7 @@ export function PuzzleBoard({
   tiles,
   imageUrl,
   onTileClick,
+  onTileSizeChange,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,14 +30,18 @@ export function PuzzleBoard({
 
     const computeSize = (containerWidth: number) => {
       const gaps = (width - 1) * UI_CONFIG.BOARD.GAP_PX;
+
       const raw = Math.floor((containerWidth - gaps) / width);
+
       return Math.min(
         UI_CONFIG.TILE.MAX_SIZE,
         Math.max(UI_CONFIG.TILE.MIN_SIZE, raw),
       );
     };
 
-    setTileSize(computeSize(container.getBoundingClientRect().width));
+    const initialSize = computeSize(container.getBoundingClientRect().width);
+    setTileSize(initialSize);
+    onTileSizeChange?.(initialSize);
 
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
@@ -44,14 +50,19 @@ export function PuzzleBoard({
 
       setTileSize((prev) => {
         const size = computeSize(entry.contentRect.width);
-        return prev === size ? prev : size;
+
+        if (prev === size) return prev;
+
+        onTileSizeChange?.(size);
+
+        return size;
       });
     });
 
     observer.observe(container);
 
     return () => observer.disconnect();
-  }, [width]);
+  }, [width, onTileSizeChange]);
 
   return (
     <div ref={containerRef} style={{ width: '100%' }}>

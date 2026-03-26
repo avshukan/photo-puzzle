@@ -53,4 +53,21 @@ describe('GamePage', () => {
       file,
     });
   });
+
+  it('shows preview overlay when Preview button is clicked', async () => {
+    render(<GamePage />);
+
+    expect(
+      screen.queryByRole('dialog', { name: 'Preview original image' }),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Preview original image' }),
+    );
+
+    expect(
+      screen.getByRole('dialog', { name: 'Preview original image' }),
+    ).toBeInTheDocument();
+    expect(screen.getByAltText('Original puzzle image')).toBeInTheDocument();
+  });
 });

@@ -2,11 +2,17 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
 import { useCases, ports } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
+import { PreviewOverlay } from '../components/PreviewOverlay';
 import { UI_CONFIG } from '../config/ui';
 
 export function GamePage() {
   const [fileName, setFileName] = useState<string>('');
+
   const [isModalOpen, setIsModalOpen] = useState(true);
+
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
 
   const [game, setGame] = useState<Game | null>(() =>
     useCases.startGame.execute({ kind: 'default' }),
@@ -25,15 +31,19 @@ export function GamePage() {
 
   useEffect(() => {
     if (!isModalOpen) return;
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
     };
+
     window.addEventListener('keydown', onKeyDown);
+
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
 
   const onUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     setFileName(file.name);
@@ -72,29 +82,48 @@ export function GamePage() {
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
 
-        {/* Upload */}
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={onUpload}
-            style={{ display: 'none' }}
-          />
-          <span
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Preview button */}
+          <button
+            type="button"
+            aria-label="Preview original image"
+            onClick={() => setIsPreviewOpen(true)}
             style={{
               border: '1px solid #ddd',
               borderRadius: 8,
               padding: '6px 10px',
               cursor: 'pointer',
               fontSize: 14,
+              background: 'transparent',
             }}
           >
-            Choose file
-          </span>
-          <span style={{ fontSize: 12, opacity: 0.7 }}>
-            {fileName || 'No file chosen'}
-          </span>
-        </label>
+            Preview
+          </button>
+
+          {/* Upload */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onUpload}
+              style={{ display: 'none' }}
+            />
+            <span
+              style={{
+                border: '1px solid #ddd',
+                borderRadius: 8,
+                padding: '6px 10px',
+                cursor: 'pointer',
+                fontSize: 14,
+              }}
+            >
+              Choose file
+            </span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>
+              {fileName || 'No file chosen'}
+            </span>
+          </label>
+        </div>
       </div>
 
       <div style={{ height: 12 }} />
@@ -105,7 +134,23 @@ export function GamePage() {
         tiles={game.puzzle.tiles}
         imageUrl={game.imageUrl}
         onTileClick={onTileClick}
+        onTileSizeChange={setTileSize}
       />
+
+      {isPreviewOpen && (
+        <PreviewOverlay
+          imageUrl={game.imageUrl}
+          onClose={() => setIsPreviewOpen(false)}
+          boardWidth={
+            game.puzzle.width * tileSize +
+            (game.puzzle.width - 1) * UI_CONFIG.BOARD.GAP_PX
+          }
+          boardHeight={
+            game.puzzle.height * tileSize +
+            (game.puzzle.height - 1) * UI_CONFIG.BOARD.GAP_PX
+          }
+        />
+      )}
 
       {game.status === 'won' && isModalOpen && (
         <div
