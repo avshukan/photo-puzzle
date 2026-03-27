@@ -57,7 +57,6 @@ Legend:
 
 |  ID | Title =========================================== | Type === | Priority | Notes ============================== |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
-|  23 | Restore image after reload                        | Value    | High     | Handle blob fallback                 |
 
 ---
 
@@ -85,6 +84,9 @@ Legend:
 |  25 | Validate persisted game schema on load            | Quality  | Medium   | Handle schema changes                |
 |  26 | Export component props types                      | Quality  | Medium   | Reuse props types across components  |
 |  27 | Use component types in tests and mocks            | Quality  | Medium   | Improve test type safety             |
+|  28 | Add unit tests for BrowserImageUrlAdapter         | Quality  | Medium   | FileReader logic untested            |
+|  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
+|  30 | Compress / resize images before storing           | Quality  | Medium   | Prevent localStorage overflow        |
 
 ---
 
@@ -92,6 +94,7 @@ Legend:
 
 |  ID | Title =========================================== | Type === | Priority | Notes ============================== |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
+|  23 | Restore image after reload                        | Value    | High     | Uploaded image survives reload       |
 |   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |
 |  10 | Add preview original image                        | Value    | High     | Overlay preview                      |

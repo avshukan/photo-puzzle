@@ -1,25 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Game } from '../../application';
-import { ports, gameService } from '../../app/compositionRoot';
+import { gameService } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 import { PreviewOverlay } from '../components/PreviewOverlay';
 import { UploadButton } from '../components/UploadButton';
-import { UI_CONFIG } from '../config/ui';
+import { APP_CONFIG } from '../../app/config/app';
 
 export function GamePage() {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [tileSize, setTileSize] = useState(UI_CONFIG.TILE.DEFAULT_SIZE);
+  const [tileSize, setTileSize] = useState(APP_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
-
-  // revoke blob urls on unmount
-  useEffect(() => {
-    return () => {
-      if (game?.imageUrl?.startsWith('blob:')) {
-        ports.imageUrlPort.revokeObjectUrl(game.imageUrl);
-      }
-    };
-  }, [game?.imageUrl]);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
@@ -35,8 +26,8 @@ export function GamePage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isModalOpen, closeModal]);
 
-  const handleUpload = (file: File) => {
-    const next = gameService.startWithUpload(file);
+  const handleUpload = async (file: File) => {
+    const next = await gameService.startWithUpload(file);
 
     setGame(next);
 
@@ -55,7 +46,7 @@ export function GamePage() {
     <div
       style={{
         padding: 16,
-        maxWidth: UI_CONFIG.BOARD.MAX_WIDTH,
+        maxWidth: APP_CONFIG.BOARD.MAX_WIDTH,
         margin: '0 auto',
       }}
     >
@@ -108,11 +99,11 @@ export function GamePage() {
           onClose={() => setIsPreviewOpen(false)}
           boardWidth={
             game.puzzle.width * tileSize +
-            (game.puzzle.width - 1) * UI_CONFIG.BOARD.GAP_PX
+            (game.puzzle.width - 1) * APP_CONFIG.BOARD.GAP_PX
           }
           boardHeight={
             game.puzzle.height * tileSize +
-            (game.puzzle.height - 1) * UI_CONFIG.BOARD.GAP_PX
+            (game.puzzle.height - 1) * APP_CONFIG.BOARD.GAP_PX
           }
         />
       )}

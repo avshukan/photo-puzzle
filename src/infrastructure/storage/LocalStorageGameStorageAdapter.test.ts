@@ -1,21 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { Game } from '../../application/models/Game';
-import type { ImageUrlPort } from '../../application/ports/ImageUrlPort';
 import { LocalStorageGameStorageAdapter } from './LocalStorageGameStorageAdapter';
 
 describe('LocalStorageGameStorageAdapter', () => {
   const STORAGE_KEY = 'photo-puzzle.game';
 
   const createAdapter = () => {
-    const imagePort: ImageUrlPort = {
-      getDefaultImageUrl: vi.fn(() => 'default-image'),
-      createObjectUrl: vi.fn(),
-      revokeObjectUrl: vi.fn(),
-    };
+    const adapter = new LocalStorageGameStorageAdapter();
 
-    const adapter = new LocalStorageGameStorageAdapter(imagePort);
-
-    return { adapter, imagePort };
+    return { adapter };
   };
 
   beforeEach(() => {
@@ -73,12 +66,12 @@ describe('LocalStorageGameStorageAdapter', () => {
     expect(result).toBeNull();
   });
 
-  it('applies fallback for blob imageUrl', () => {
-    const { adapter, imagePort } = createAdapter();
+  it('loads game with data URL imageUrl from localStorage', () => {
+    const { adapter } = createAdapter();
 
     const game: Game = {
       puzzle: { width: 4, height: 4, tiles: [1, 2, 3] as const },
-      imageUrl: 'blob:123',
+      imageUrl: 'data:image/png;base64,abc123',
       status: 'playing',
     };
 
@@ -86,12 +79,104 @@ describe('LocalStorageGameStorageAdapter', () => {
 
     const result = adapter.load();
 
-    expect(imagePort.getDefaultImageUrl).toHaveBeenCalled();
+    expect(result).toEqual(game);
+  });
 
-    expect(result).toEqual({
-      ...game,
-      imageUrl: 'default-image',
+  it('returns null if puzzle is missing', () => {
+    const { adapter } = createAdapter();
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ imageUrl: 'url', status: 'playing' }),
+    );
+
+    expect(adapter.load()).toBeNull();
+  });
+
+  it('returns null if imageUrl is not a string', () => {
+    const { adapter } = createAdapter();
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        puzzle: { width: 4, height: 4, tiles: [1] },
+        imageUrl: 123,
+        status: 'playing',
+      }),
+    );
+
+    expect(adapter.load()).toBeNull();
+  });
+
+  it('returns null if status is invalid', () => {
+    const { adapter } = createAdapter();
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        puzzle: { width: 4, height: 4, tiles: [1] },
+        imageUrl: 'url',
+        status: 'unknown',
+      }),
+    );
+
+    expect(adapter.load()).toBeNull();
+  });
+
+  it('returns null if puzzle.width is not a number', () => {
+    const { adapter } = createAdapter();
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        puzzle: { width: 'four', height: 4, tiles: [1] },
+        imageUrl: 'url',
+        status: 'playing',
+      }),
+    );
+
+    expect(adapter.load()).toBeNull();
+  });
+
+  it('returns null if puzzle.tiles is not an array', () => {
+    const { adapter } = createAdapter();
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        puzzle: { width: 4, height: 4, tiles: 'not-array' },
+        imageUrl: 'url',
+        status: 'playing',
+      }),
+    );
+
+    expect(adapter.load()).toBeNull();
+  });
+
+  it('retries save after clearing storage on first failure', () => {
+    const { adapter } = createAdapter();
+
+    const game: Game = {
+      puzzle: { width: 4, height: 4, tiles: [1, 2, 3] as const },
+      imageUrl: 'url',
+      status: 'playing',
+    };
+
+    let callCount = 0;
+
+    const originalSetItem = localStorage.setItem.bind(localStorage);
+
+    vi.spyOn(localStorage, 'setItem').mockImplementation((key, value) => {
+      callCount++;
+      if (callCount === 1) throw new Error('quota exceeded');
+      originalSetItem(key, value);
     });
+
+    adapter.save(game);
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+
+    expect(stored).toEqual(game);
   });
 
   it('clears storage', () => {

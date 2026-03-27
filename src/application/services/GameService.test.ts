@@ -3,6 +3,7 @@ import type { Game } from '../models/Game';
 import type { StartGame } from '../usecases/StartGame';
 import type { MoveTile } from '../usecases/MoveTile';
 import type { GameStoragePort } from '../ports/GameStoragePort';
+import type { ImageUrlPort } from '../ports/ImageUrlPort';
 import { GameService } from './GameService';
 
 describe('GameService', () => {
@@ -14,6 +15,7 @@ describe('GameService', () => {
   let storageLoad: Mock<GameStoragePort['load']>;
   let storageClear: Mock<GameStoragePort['clear']>;
   let storage: GameStoragePort;
+  let imageUrlPort: ImageUrlPort;
 
   let service: GameService;
 
@@ -25,30 +27,39 @@ describe('GameService', () => {
 
   beforeEach(() => {
     startGameExecute = vi.fn();
+
     startGame = {
       execute: startGameExecute,
       imagePort: {
         getDefaultImageUrl: vi.fn(),
-        createObjectUrl: vi.fn(),
-        revokeObjectUrl: vi.fn(),
+        readAsDataUrl: vi.fn(),
       },
     } as unknown as StartGame;
 
     moveTileExecute = vi.fn();
+
     moveTile = {
       execute: moveTileExecute,
     } as unknown as MoveTile;
 
     storageSave = vi.fn();
+
     storageLoad = vi.fn();
+
     storageClear = vi.fn();
+
     storage = {
       save: storageSave,
       load: storageLoad,
       clear: storageClear,
     } as GameStoragePort;
 
-    service = new GameService(startGame, moveTile, storage);
+    imageUrlPort = {
+      getDefaultImageUrl: vi.fn(),
+      readAsDataUrl: vi.fn(),
+    };
+
+    service = new GameService(startGame, moveTile, storage, imageUrlPort);
   });
 
   it('init() returns saved game if exists', () => {
@@ -57,33 +68,46 @@ describe('GameService', () => {
     const result = service.init();
 
     expect(result).toBe(game);
+
     expect(startGameExecute).not.toHaveBeenCalled();
+
     expect(storageSave).not.toHaveBeenCalled();
   });
 
   it('init() starts new game if no saved game', () => {
     storageLoad.mockReturnValue(null);
+
     startGameExecute.mockReturnValue(game);
 
     const result = service.init();
 
     expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+
     expect(storageSave).toHaveBeenCalledWith(game);
+
     expect(result).toBe(game);
   });
 
-  it('startWithUpload() starts game and saves it', () => {
+  it('startWithUpload() reads data URL, starts game and saves it', async () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
+
+    const dataUrl = 'data:image/png;base64,abc';
+
+    vi.mocked(imageUrlPort.readAsDataUrl).mockResolvedValue(dataUrl);
 
     startGameExecute.mockReturnValue(game);
 
-    const result = service.startWithUpload(file);
+    const result = await service.startWithUpload(file);
+
+    expect(imageUrlPort.readAsDataUrl).toHaveBeenCalledWith(file);
 
     expect(startGameExecute).toHaveBeenCalledWith({
       kind: 'upload',
-      file,
+      imageUrl: dataUrl,
     });
+
     expect(storageSave).toHaveBeenCalledWith(game);
+
     expect(result).toBe(game);
   });
 
@@ -95,7 +119,9 @@ describe('GameService', () => {
     const result = service.move(game, 1);
 
     expect(moveTileExecute).toHaveBeenCalledWith(game, 1);
+
     expect(storageSave).toHaveBeenCalledWith(nextGame);
+
     expect(result).toBe(nextGame);
   });
 
@@ -103,5 +129,39 @@ describe('GameService', () => {
     service.reset();
 
     expect(storageClear).toHaveBeenCalled();
+  });
+
+  it('falls back to default on read error', async () => {
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+
+    vi.mocked(imageUrlPort.readAsDataUrl).mockRejectedValue(new Error());
+
+    startGameExecute.mockReturnValue(game);
+
+    const result = await service.startWithUpload(file);
+
+    expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+
+    expect(storageSave).toHaveBeenCalledWith(game);
+
+    expect(result).toBe(game);
+  });
+
+  it('falls back to default when file exceeds size limit', async () => {
+    const content = new Uint8Array(3 * 1024 * 1024); // 3MB > 2MB limit
+
+    const file = new File([content], 'large.png', { type: 'image/png' });
+
+    startGameExecute.mockReturnValue(game);
+
+    const result = await service.startWithUpload(file);
+
+    expect(imageUrlPort.readAsDataUrl).not.toHaveBeenCalled();
+
+    expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+
+    expect(storageSave).toHaveBeenCalledWith(game);
+
+    expect(result).toBe(game);
   });
 });
