@@ -55,15 +55,17 @@ Legend:
 
 ## Doing
 
-|  ID | Title =========================================== | Type === | Priority | Notes ============================== |
+|  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
+| === | ================================================= | ======== | ======== | ==================================== |
 
 ---
 
 ## Todo
 
-|  ID | Title =========================================== | Type === | Priority | Notes ============================== |
+|  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
+| === | ================================================= | ======== | ======== | ==================================== |
 |   1 | Add reset / new game button                       | Value    | Medium   | Use GameService.reset()              |
 |   2 | Add move counter                                  | Value    | Low      | UI only                              |
 |   3 | Add timer                                         | Value    | Low      | UI only                              |
@@ -92,8 +94,9 @@ Legend:
 
 ## Done
 
-|  ID | Title =========================================== | Type === | Priority | Notes ============================== |
+|  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
+| === | ================================================= | ======== | ======== | ==================================== |
 |  23 | Restore image after reload                        | Value    | High     | Uploaded image survives reload       |
 |   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |
@@ -101,5 +104,13 @@ Legend:
 |   4 | Add close button to victory modal                 | Value    | High     | Allow continue viewing               |
 |  24 | Fix double file selection (opens twice) on upload | Quality  | High     | User must pick 2 times               |
 |   7 | Fix board overflow on mobile                      | Value    | High     | Responsive tile size                 |
+
+---
+
+## Rejected
+
+|  ID | Title                                             | Type     | Priority | Notes                                |
+| --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
+| === | ================================================= | ======== | ======== | ==================================== |
 
 ---

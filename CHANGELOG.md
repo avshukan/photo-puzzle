@@ -5,11 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 Versioning follows SemVer.
 
-## [Unreleased]
+## [v0.2.0] - 2026-03-27
 
 ### Added
 
-- Preview original image overlay: a "Preview" button in the header opens the original puzzle image as a full-screen overlay. Close by clicking the backdrop or pressing Escape.
+- Persist game state (tiles + image)
+- Uploaded image survives reload
+- Preview original image overlay
+
+### Improved
+
+- File upload UI (custom button)
+- Victory modal UX (close button)
+- Responsive puzzle board layout
+
+### Fixed
+
+- Double file selection on upload
+- Board overflow on mobile
 
 ## [v0.1.0] - 2026-03-16
 

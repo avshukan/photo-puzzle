@@ -19,7 +19,8 @@ We follow **Incremental Delivery**.
    - UI
    - tests
 5. Merge to `main` via PR.
-6. Finish iteration with a release (tag + deploy).
+6. Each merge triggers **automatic deploy**.
+7. Finish iteration with a release (tag + changelog).
 
 ## Definition of Done (DoD)
 
@@ -30,6 +31,13 @@ An iteration is "done" when:
 - Demo is deployed and works.
 - `CHANGELOG.md` is updated for the new version.
 - A git tag exists for the release.
+
+## CI/CD
+
+- Merge to `main` triggers automatic deploy.
+- There is no separate "release branch".
+- Each merge is production-ready.
+- Version is tagged manually after iteration completion.
 
 ## Release flow
 
@@ -43,8 +51,6 @@ SemVer: `v0.x.y`
 `package.json` uses the same version without `v` (example: `0.2.0`).
 
 ### Commands (recommended)
-
-New features (minor release):
 
 ```bash
 npm version minor
