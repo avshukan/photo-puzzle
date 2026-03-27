@@ -6,21 +6,24 @@
 
 https://avshukan.github.io/photo-puzzle/
 
-## MVP
+## Features (v0.2.0)
 
-- 4×4 board (15 tiles + 1 empty)
+- 4×4 puzzle (15 tiles + 1 empty)
 - Click adjacent tile to move
-- Always solvable shuffle (random legal moves)
+- Always solvable shuffle
 - Default image on first load
-- Upload local image to restart the game
-- Victory message on solved
-- No backend. Images stay in the browser.
+- Upload local image to start a new game
+- Game state persists after reload
+- Uploaded image is restored
+- Preview original image
+- Responsive board (mobile-friendly)
+- Victory modal on solve
 
 ## Architecture (Clean Architecture)
 
 - `src/domain` — puzzle rules (pure functions)
 - `src/application` — use cases (`StartGame`, `MoveTile`)
-- `src/infrastructure` — browser adapters (object URL, default image)
+- `src/infrastructure` — browser adapters (storage, image)
 - `src/presentation` — React UI
 
 Domain has no dependency on React/DOM/browser APIs.
@@ -29,16 +32,14 @@ Domain has no dependency on React/DOM/browser APIs.
 
 We follow **Incremental Delivery**.
 
-- Work is planned in **iterations**.
-- Each iteration is a set of **vertical slices** (end-to-end features).
-- Each iteration ends with a **release** (tag + deploy).
+- Work is planned in **iterations**
+- Each iteration delivers a **vertical slice**
+- Each merge to `main` is automatically deployed
 
-Versioning: **SemVer** (`v0.x.y`).
+Versioning: **SemVer** (`v0.x.y`)
 
-- `v0.(x+1).0` — new features / noticeable increment
-- `v0.x.(y+1)` — fixes / small improvements
-
-Backlog and iteration plans live in `docs/` (see below).
+- `v0.(x+1).0` — new features
+- `v0.x.(y+1)` — fixes
 
 ## Scripts
 
