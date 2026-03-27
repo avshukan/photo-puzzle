@@ -91,7 +91,7 @@ Legend:
 
 |  ID | Title =========================================== | Type === | Priority | Notes ============================== |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
-|  23 | Restore image after reload                        | Value    | High     | Store data URL in localStorage       |
+|  23 | Restore image after reload                        | Value    | High     | Uploaded image survives reload       |
 |   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |
 |  10 | Add preview original image                        | Value    | High     | Overlay preview                      |

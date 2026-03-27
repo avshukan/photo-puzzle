@@ -9,7 +9,13 @@ export class BrowserImageUrlAdapter implements ImageUrlPort {
   readAsDataUrl(file: File): Promise<ImageUrl> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('FileReader result is not a string'));
+        }
+      };
       reader.onerror = () => reject(reader.error);
       reader.readAsDataURL(file);
     });

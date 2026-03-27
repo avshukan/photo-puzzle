@@ -138,8 +138,12 @@ describe('GameService', () => {
 
     startGameExecute.mockReturnValue(game);
 
-    await service.startWithUpload(file);
+    const result = await service.startWithUpload(file);
 
     expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+
+    expect(storageSave).toHaveBeenCalledWith(game);
+
+    expect(result).toBe(game);
   });
 });

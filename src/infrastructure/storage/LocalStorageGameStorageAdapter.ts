@@ -1,9 +1,16 @@
 import type { GameStoragePort } from '../../application/ports/GameStoragePort';
 import type { Game } from '../../application/models/Game';
+import type { ImageUrlPort } from '../../application/ports/ImageUrlPort';
 
 const STORAGE_KEY = 'photo-puzzle.game';
 
 export class LocalStorageGameStorageAdapter implements GameStoragePort {
+  private readonly imagePort: ImageUrlPort;
+
+  constructor(imagePort: ImageUrlPort) {
+    this.imagePort = imagePort;
+  }
+
   save(game: Game): void {
     try {
       const persisted = {
@@ -27,6 +34,14 @@ export class LocalStorageGameStorageAdapter implements GameStoragePort {
 
       if (!parsed?.puzzle || !parsed?.imageUrl) {
         return null;
+      }
+
+      // backward compatibility: replace stale blob URLs with default
+      if (parsed.imageUrl?.startsWith('blob:')) {
+        return {
+          ...parsed,
+          imageUrl: this.imagePort.getDefaultImageUrl(),
+        };
       }
 
       return parsed;

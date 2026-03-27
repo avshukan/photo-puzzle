@@ -49,6 +49,8 @@ export class GameService {
       // fallback
       const game = this.startGame.execute({ kind: 'default' });
 
+      this.storage.save(game);
+
       return game;
     }
   }
