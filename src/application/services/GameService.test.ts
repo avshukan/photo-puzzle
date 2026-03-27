@@ -146,4 +146,22 @@ describe('GameService', () => {
 
     expect(result).toBe(game);
   });
+
+  it('falls back to default when file exceeds size limit', async () => {
+    const content = new Uint8Array(3 * 1024 * 1024); // 3MB > 2MB limit
+
+    const file = new File([content], 'large.png', { type: 'image/png' });
+
+    startGameExecute.mockReturnValue(game);
+
+    const result = await service.startWithUpload(file);
+
+    expect(imageUrlPort.readAsDataUrl).not.toHaveBeenCalled();
+
+    expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+
+    expect(storageSave).toHaveBeenCalledWith(game);
+
+    expect(result).toBe(game);
+  });
 });
