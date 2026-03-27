@@ -12,24 +12,56 @@ export class LocalStorageGameStorageAdapter implements GameStoragePort {
         status: game.status,
       };
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+      const serialized = JSON.stringify(persisted);
+
+      localStorage.setItem(STORAGE_KEY, serialized);
     } catch {
-      // ignore
+      // fallback: очищаем storage и пробуем сохранить заново
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+
+        const fallback = {
+          puzzle: game.puzzle,
+          imageUrl: game.imageUrl,
+          status: game.status,
+        };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback));
+      } catch {
+        // окончательно игнорируем (лучше, чем падение)
+      }
     }
   }
 
   load(): Game | null {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
+      const data = localStorage.getItem(STORAGE_KEY);
 
-      const parsed = JSON.parse(raw);
+      if (!data) return null;
 
-      if (!parsed?.puzzle || !parsed?.imageUrl) {
+      const parsed = JSON.parse(data);
+
+      if (
+        !parsed ||
+        typeof parsed !== 'object' ||
+        !parsed.puzzle ||
+        typeof parsed.imageUrl !== 'string' ||
+        (parsed.status !== 'playing' && parsed.status !== 'won')
+      ) {
         return null;
       }
 
-      return parsed;
+      const { puzzle } = parsed;
+
+      if (
+        typeof puzzle.width !== 'number' ||
+        typeof puzzle.height !== 'number' ||
+        !Array.isArray(puzzle.tiles)
+      ) {
+        return null;
+      }
+
+      return parsed as Game;
     } catch {
       return null;
     }
