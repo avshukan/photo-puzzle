@@ -11,7 +11,12 @@ const startGame = new StartGame(imageUrlPort);
 
 const moveTile = new MoveTile();
 
-export const gameService = new GameService(startGame, moveTile, gameStorage, imageUrlPort);
+export const gameService = new GameService(
+  startGame,
+  moveTile,
+  gameStorage,
+  imageUrlPort,
+);
 
 export const ports = {
   imageUrlPort,

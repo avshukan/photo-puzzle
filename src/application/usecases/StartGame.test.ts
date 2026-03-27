@@ -48,7 +48,10 @@ describe('StartGame', () => {
 
     const startGame = new StartGame(imagePort);
 
-    const game = startGame.execute({ kind: 'upload', imageUrl: 'data:image/png;base64,abc' });
+    const game = startGame.execute({
+      kind: 'upload',
+      imageUrl: 'data:image/png;base64,abc',
+    });
 
     expect(imagePort.getDefaultImageUrl).not.toHaveBeenCalled();
     expect(shuffleSpy).toHaveBeenCalledWith(4, 4, 300);

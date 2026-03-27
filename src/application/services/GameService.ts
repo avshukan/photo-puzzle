@@ -30,21 +30,34 @@ export class GameService {
     }
 
     const game = this.startGame.execute({ kind: 'default' });
+
     this.storage.save(game);
 
     return game;
   }
 
   async startWithUpload(file: File): Promise<Game> {
-    const imageUrl = await this.imageUrlPort.readAsDataUrl(file);
-    const game = this.startGame.execute({ kind: 'upload', imageUrl });
-    this.storage.save(game);
-    return game;
+    try {
+      const imageUrl = await this.imageUrlPort.readAsDataUrl(file);
+
+      const game = this.startGame.execute({ kind: 'upload', imageUrl });
+
+      this.storage.save(game);
+
+      return game;
+    } catch {
+      // fallback
+      const game = this.startGame.execute({ kind: 'default' });
+
+      return game;
+    }
   }
 
   move(game: Game, fromIndex: number): Game {
     const next = this.moveTile.execute(game, fromIndex);
+
     this.storage.save(next);
+
     return next;
   }
 
