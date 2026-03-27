@@ -84,6 +84,12 @@ Legend:
 |  25 | Validate persisted game schema on load            | Quality  | Medium   | Handle schema changes                |
 |  26 | Export component props types                      | Quality  | Medium   | Reuse props types across components  |
 |  27 | Use component types in tests and mocks            | Quality  | Medium   | Improve test type safety             |
+|  28 | Add error feedback on upload failure               | Quality  | Medium   | Toast / inline message               |
+|  29 | Add unit tests for BrowserImageUrlAdapter          | Quality  | Medium   | FileReader logic untested            |
+|  30 | Add drag-and-drop tile movement                    | Value    | Low      | Touch-friendly UX                    |
+|  31 | Add focus trap in modals                           | Quality  | Medium   | Accessibility improvement            |
+|  32 | Compress / resize images before storing            | Quality  | Medium   | Prevent localStorage overflow        |
+|  33 | Add difficulty level selection (3×3 / 4×4 / 5×5)   | Value    | Medium   | Reuse domain shuffleFromSolved       |
 
 ---
 

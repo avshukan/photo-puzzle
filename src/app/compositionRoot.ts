@@ -5,7 +5,7 @@ import { GameService } from '../application/services/GameService';
 
 const imageUrlPort = new BrowserImageUrlAdapter();
 
-const gameStorage = new LocalStorageGameStorageAdapter(imageUrlPort);
+const gameStorage = new LocalStorageGameStorageAdapter();
 
 const startGame = new StartGame(imageUrlPort);
 
