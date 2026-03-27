@@ -4,7 +4,7 @@
 
 ## Demo
 
-https://avshukan.github.io/photo-puzzle/
+https://puzzle-photo.avshukan.com/
 
 ## Features (v0.2.0)
 
