@@ -79,7 +79,7 @@ Legend:
 |  16 | Add keyboard controls                             | Value    | Low      | Arrow keys                           |
 |  17 | Disable interactions under modal/preview          | Quality  | Low      | Prevent background clicks            |
 |  18 | Improve empty tile styling                        | Quality  | Low      | Better visual                        |
-|  19 | Limit large image uploads                         | Quality  | Low      | Size / resize                        |
+|  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Guard on input (e.g. >5–10MB)        |
 |  20 | Add loading state on upload                       | Quality  | Low      | User feedback                        |
 |  21 | Add play again button in modal                    | Value    | Low      | Restart quickly                      |
 |  22 | Add shareable puzzle URL                          | Value    | Low      | Future feature                       |
@@ -88,7 +88,11 @@ Legend:
 |  27 | Use component types in tests and mocks            | Quality  | Medium   | Improve test type safety             |
 |  28 | Add unit tests for BrowserImageUrlAdapter         | Quality  | Medium   | FileReader logic untested            |
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
-|  30 | Compress / resize images before storing           | Quality  | Medium   | Prevent localStorage overflow        |
+|  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
+|  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
+|  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
+|  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
+|  34 | Add random images source                          | Value    | Low      | Optional mode                        |
 
 ---
 
