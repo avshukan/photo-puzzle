@@ -66,7 +66,7 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
-|   1 | Add reset / new game button                       | Value    | Medium   | Use GameService.reset()              |
+|   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
 |   2 | Add move counter                                  | Value    | Low      | UI only                              |
 |   3 | Add timer                                         | Value    | Low      | UI only                              |
 |   5 | Add board size selector (4×4 / 5×3 / 5×5)         | Value    | Low      | Domain supports                      |
@@ -78,9 +78,9 @@ Legend:
 |  15 | Add simple tile animations                        | Value    | Low      | CSS transitions                      |
 |  16 | Add keyboard controls                             | Value    | Low      | Arrow keys                           |
 |  17 | Disable interactions under modal/preview          | Quality  | Low      | Prevent background clicks            |
-|  18 | Improve empty tile styling                        | Quality  | Low      | Better visual                        |
+|  18 | Improve empty tile styling                        | Quality  | Medium   | Better visual                        |
 |  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Guard on input (e.g. >5–10MB)        |
-|  20 | Add loading state on upload                       | Quality  | Low      | User feedback                        |
+|  20 | Add loading state on upload                       | Quality  | Medium   | User feedback                        |
 |  21 | Add play again button in modal                    | Value    | Low      | Restart quickly                      |
 |  22 | Add shareable puzzle URL                          | Value    | Low      | Future feature                       |
 |  25 | Validate persisted game schema on load            | Quality  | Medium   | Handle schema changes                |
