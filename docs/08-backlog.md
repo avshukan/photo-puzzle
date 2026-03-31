@@ -66,7 +66,8 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
-|   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
+|   1 | Add shuffle button (restart with same image)      | Value    | High     | Use `shuffleFromSolved()` on current image  |
+|  35 | Add new game button (clear state, new upload)     | Value    | Medium   | Use `GameService.reset()` (already exists)  |
 |   2 | Add move counter                                  | Value    | Low      | UI only                              |
 |   3 | Add timer                                         | Value    | Low      | UI only                              |
 |   5 | Add board size selector (4×4 / 5×3 / 5×5)         | Value    | Low      | Domain supports                      |
@@ -79,18 +80,17 @@ Legend:
 |  16 | Add keyboard controls                             | Value    | Low      | Arrow keys                           |
 |  17 | Disable interactions under modal/preview          | Quality  | Low      | Prevent background clicks            |
 |  18 | Improve empty tile styling                        | Quality  | Medium   | Better visual                        |
-|  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Guard on input (e.g. >5–10MB)        |
+|  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Frontend guard before read; 2MB check already in `GameService` (silently falls back) |
 |  20 | Add loading state on upload                       | Quality  | Medium   | User feedback                        |
 |  21 | Add play again button in modal                    | Value    | Low      | Restart quickly                      |
 |  22 | Add shareable puzzle URL                          | Value    | Low      | Future feature                       |
-|  25 | Validate persisted game schema on load            | Quality  | Medium   | Handle schema changes                |
 |  26 | Export component props types                      | Quality  | Medium   | Reuse props types across components  |
 |  27 | Use component types in tests and mocks            | Quality  | Medium   | Improve test type safety             |
 |  28 | Add unit tests for BrowserImageUrlAdapter         | Quality  | Medium   | FileReader logic untested            |
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
 |  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
 |  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
-|  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
+|  32 | Handle storage overflow gracefully                | Quality  | High     | Retry+clear logic exists in adapter; user notification still missing |
 |  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
 |  34 | Add random images source                          | Value    | Low      | Optional mode                        |
 
@@ -101,6 +101,7 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
+|  25 | Validate persisted game schema on load            | Quality  | High     | Schema validation in `LocalStorageGameStorageAdapter.load()` |
 |  23 | Restore image after reload                        | Value    | High     | Uploaded image survives reload       |
 |   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |
