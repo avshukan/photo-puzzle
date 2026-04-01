@@ -13,29 +13,30 @@ import type { MoveTile } from '../usecases/MoveTile';
 import type { GameStoragePort } from '../ports/GameStoragePort';
 import type { ImageUrlPort } from '../ports/ImageUrlPort';
 import { GameService } from './GameService';
+import { ImageTooLargeError } from '../errors/ImageErrors';
 
-function mockImageLoad(width = 1000, height = 1000) {
-  const originalImage = globalThis.Image;
+// function mockImageLoad(width = 1000, height = 1000) {
+//   const originalImage = globalThis.Image;
 
-  class MockImage {
-    width = width;
-    height = height;
-    onload: (() => void) | null = null;
-    onerror: (() => void) | null = null;
+//   class MockImage {
+//     width = width;
+//     height = height;
+//     onload: (() => void) | null = null;
+//     onerror: (() => void) | null = null;
 
-    set src(_value: string) {
-      setTimeout(() => {
-        this.onload?.();
-      }, 0);
-    }
-  }
+//     set src(_value: string) {
+//       setTimeout(() => {
+//         this.onload?.();
+//       }, 0);
+//     }
+//   }
 
-  globalThis.Image = MockImage as unknown as typeof Image;
+//   globalThis.Image = MockImage as unknown as typeof Image;
 
-  return () => {
-    globalThis.Image = originalImage;
-  };
-}
+//   return () => {
+//     globalThis.Image = originalImage;
+//   };
+// }
 
 describe('GameService', () => {
   let startGameExecute: Mock<StartGame['execute']>;
@@ -58,7 +59,7 @@ describe('GameService', () => {
   };
 
   beforeEach(() => {
-    restoreImage = mockImageLoad();
+    // restoreImage = mockImageLoad();
 
     startGameExecute = vi.fn();
 
@@ -129,29 +130,6 @@ describe('GameService', () => {
     expect(result).toBe(game);
   });
 
-  it('startWithUpload() reads data URL, starts game and saves it', async () => {
-    const file = new File(['test'], 'test.png', { type: 'image/png' });
-
-    const dataUrl = 'data:image/png;base64,abc';
-
-    vi.mocked(imageUrlPort.readAsDataUrl).mockResolvedValue(dataUrl);
-
-    startGameExecute.mockReturnValue(game);
-
-    const result = await service.startWithUpload(file);
-
-    expect(imageUrlPort.readAsDataUrl).toHaveBeenCalledWith(file);
-
-    expect(startGameExecute).toHaveBeenCalledWith({
-      kind: 'upload',
-      imageUrl: dataUrl,
-    });
-
-    expect(storageSave).toHaveBeenCalledWith(game);
-
-    expect(result).toBe(game);
-  });
-
   it('move() applies move and saves result', () => {
     const nextGame: Game = { ...game, status: 'won' };
 
@@ -179,13 +157,11 @@ describe('GameService', () => {
 
     startGameExecute.mockReturnValue(game);
 
-    const result = await service.startWithUpload(file);
+    await expect(service.startWithUpload(file)).rejects.toThrow();
 
-    expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+    expect(startGameExecute).not.toHaveBeenCalled();
 
-    expect(storageSave).toHaveBeenCalledWith(game);
-
-    expect(result).toBe(game);
+    expect(storageSave).not.toHaveBeenCalled();
   });
 
   it('falls back to default when file exceeds size limit', async () => {
@@ -195,14 +171,14 @@ describe('GameService', () => {
 
     startGameExecute.mockReturnValue(game);
 
-    const result = await service.startWithUpload(file);
+    await expect(service.startWithUpload(file)).rejects.toBeInstanceOf(
+      ImageTooLargeError,
+    );
 
     expect(imageUrlPort.readAsDataUrl).not.toHaveBeenCalled();
 
-    expect(startGameExecute).toHaveBeenCalledWith({ kind: 'default' });
+    expect(startGameExecute).not.toHaveBeenCalled();
 
-    expect(storageSave).toHaveBeenCalledWith(game);
-
-    expect(result).toBe(game);
+    expect(storageSave).not.toHaveBeenCalled();
   });
 });

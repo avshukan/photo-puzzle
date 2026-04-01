@@ -38,22 +38,18 @@ export class GameService {
   }
 
   async startWithUpload(file: File): Promise<Game> {
-    try {
-      await validateImage(file);
+    await validateImage(file);
 
-      const imageUrl = await this.imageUrlPort.readAsDataUrl(file);
+    const imageUrl = await this.imageUrlPort.readAsDataUrl(file);
 
-      const game = this.startGame.execute({
-        kind: 'upload',
-        imageUrl,
-      });
+    const game = this.startGame.execute({
+      kind: 'upload',
+      imageUrl,
+    });
 
-      this.storage.save(game);
+    this.storage.save(game);
 
-      return game;
-    } catch {
-      return this.startDefaultGame();
-    }
+    return game;
   }
 
   move(game: Game, fromIndex: number): Game {
@@ -68,11 +64,11 @@ export class GameService {
     this.storage.clear();
   }
 
-  private startDefaultGame(): Game {
-    const game = this.startGame.execute({ kind: 'default' });
+  // private startDefaultGame(): Game {
+  //   const game = this.startGame.execute({ kind: 'default' });
 
-    this.storage.save(game);
+  //   this.storage.save(game);
 
-    return game;
-  }
+  //   return game;
+  // }
 }
