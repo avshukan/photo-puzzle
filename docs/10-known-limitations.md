@@ -13,22 +13,18 @@ This document describes current technical and UX limitations of the project.
 
 ## Upload
 
-- Maximum file size: **10MB**
-- Maximum resolution: **8000px**
-- Files exceeding limits are rejected before processing
-- User sees an error message on rejection
+- Maximum file size: **2MB** (defined in config)
+- Files larger than 2MB are ignored
+- In case of error (size limit, read failure), the game falls back to a default image
+- No user-visible error feedback is shown
 
 ---
 
 ## Images
 
-- Images are resized and compressed before storing
-- Standard processing:
-  - Resize to **1024px max**
-  - JPEG quality **0.75**
-- If needed, additional resize to **800px**
-- Final image must fit into ~2MB (base64) to be stored
-- If not, image is used without persistence
+- Images are stored as base64 (data URL)
+- No compression or resizing is applied
+- Large images close to the 2MB limit may still significantly impact storage size
 
 ---
 
@@ -50,8 +46,8 @@ This document describes current technical and UX limitations of the project.
 
 ## Performance
 
-- Very large images (before processing) may cause short delays
-- Image processing is done on the client (CPU-bound)
+- Very large images (near 2MB) may affect performance
+- No image optimization or lazy processing
 
 ---
 
@@ -62,18 +58,11 @@ This document describes current technical and UX limitations of the project.
 
 ---
 
-## Planned improvements (Iteration 2)
-
-- Add shuffle button for quick restart
-- Add proper favicon
-- Improve error handling UX
-
----
-
 ## Future improvements
 
 Potential areas for improvement:
 
+- Image compression / resizing before storing
 - Better accessibility (focus trap, keyboard navigation)
 - Support for different board sizes
 - Improved persistence strategy

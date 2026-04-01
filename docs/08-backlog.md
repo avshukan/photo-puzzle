@@ -60,6 +60,7 @@ Legend:
 | === | ================================================= | ======== | ======== | ==================================== |
 |   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
 |  11 | Add proper favicon                                | Quality  | Medium   | Replace default                      |
+|  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Guard on input (e.g. >5–10MB)        |
 |  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
 |  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 |  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
@@ -82,7 +83,6 @@ Legend:
 |  16 | Add keyboard controls                             | Value    | Low      | Arrow keys                           |
 |  17 | Disable interactions under modal/preview          | Quality  | Low      | Prevent background clicks            |
 |  18 | Improve empty tile styling                        | Quality  | Medium   | Better visual                        |
-|  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Guard on input (e.g. >5–10MB)        |
 |  20 | Add loading state on upload                       | Quality  | Medium   | User feedback                        |
 |  21 | Add play again button in modal                    | Value    | Low      | Restart quickly                      |
 |  22 | Add shareable puzzle URL                          | Value    | Low      | Future feature                       |
