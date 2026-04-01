@@ -25,3 +25,10 @@ export class ImageHeightTooLargeError extends ImageValidationError {
     this.name = 'ImageHeightTooLargeError';
   }
 }
+
+export class ImageLoadError extends ImageValidationError {
+  constructor() {
+    super('Failed to load image');
+    this.name = 'ImageLoadError';
+  }
+}

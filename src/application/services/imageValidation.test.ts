@@ -4,6 +4,7 @@ import {
   ImageTooLargeError,
   ImageWidthTooLargeError,
   ImageHeightTooLargeError,
+  ImageLoadError,
 } from '../errors/ImageErrors';
 
 // --- helpers ---
@@ -116,12 +117,12 @@ describe('validateImage', () => {
     restore();
   });
 
-  it('should throw on image load error', async () => {
+  it('should throw ImageLoadError when image fails to load', async () => {
     const restore = mockImageError();
 
     const file = createFile(1024);
 
-    await expect(validateImage(file)).rejects.toThrow();
+    await expect(validateImage(file)).rejects.toBeInstanceOf(ImageLoadError);
 
     restore();
   });

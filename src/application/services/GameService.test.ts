@@ -15,29 +15,6 @@ import type { ImageUrlPort } from '../ports/ImageUrlPort';
 import { GameService } from './GameService';
 import { ImageTooLargeError } from '../errors/ImageErrors';
 
-// function mockImageLoad(width = 1000, height = 1000) {
-//   const originalImage = globalThis.Image;
-
-//   class MockImage {
-//     width = width;
-//     height = height;
-//     onload: (() => void) | null = null;
-//     onerror: (() => void) | null = null;
-
-//     set src(_value: string) {
-//       setTimeout(() => {
-//         this.onload?.();
-//       }, 0);
-//     }
-//   }
-
-//   globalThis.Image = MockImage as unknown as typeof Image;
-
-//   return () => {
-//     globalThis.Image = originalImage;
-//   };
-// }
-
 describe('GameService', () => {
   let startGameExecute: Mock<StartGame['execute']>;
   let startGame: StartGame;
@@ -48,7 +25,6 @@ describe('GameService', () => {
   let storageClear: Mock<GameStoragePort['clear']>;
   let storage: GameStoragePort;
   let imageUrlPort: ImageUrlPort;
-  let restoreImage: (() => void) | null;
 
   let service: GameService;
 
@@ -59,8 +35,6 @@ describe('GameService', () => {
   };
 
   beforeEach(() => {
-    // restoreImage = mockImageLoad();
-
     startGameExecute = vi.fn();
 
     startGame = {
@@ -98,9 +72,6 @@ describe('GameService', () => {
   });
 
   afterEach(() => {
-    restoreImage?.();
-    restoreImage = null;
-
     vi.restoreAllMocks();
   });
 
