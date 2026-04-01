@@ -58,6 +58,11 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
+|   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
+|  11 | Add proper favicon                                | Quality  | Medium   | Replace default                      |
+|  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
+|  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
+|  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
 
 ---
 
@@ -66,12 +71,10 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
-|   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
 |   2 | Add move counter                                  | Value    | Low      | UI only                              |
 |   3 | Add timer                                         | Value    | Low      | UI only                              |
 |   5 | Add board size selector (4×4 / 5×3 / 5×5)         | Value    | Low      | Domain supports                      |
 |   6 | Refactor PuzzleBoard styling to CSS module        | Refactor | Low      | Optional                             |
-|  11 | Add proper favicon                                | Quality  | Medium   | Replace default                      |
 |  12 | Split GamePage into smaller components            | Refactor | Medium   | Header, modal                        |
 |  13 | Move inline styles to CSS modules                 | Quality  | Low      | Remove inline styles                 |
 |  14 | Extract Upload control component                  | Refactor | Low      | Remove duplication                   |
@@ -88,9 +91,6 @@ Legend:
 |  27 | Use component types in tests and mocks            | Quality  | Medium   | Improve test type safety             |
 |  28 | Add unit tests for BrowserImageUrlAdapter         | Quality  | Medium   | FileReader logic untested            |
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
-|  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
-|  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
-|  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
 |  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
 |  34 | Add random images source                          | Value    | Low      | Optional mode                        |
 
