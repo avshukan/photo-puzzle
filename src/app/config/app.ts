@@ -12,5 +12,7 @@ export const APP_CONFIG = {
 
   GAME: {
     MAX_FILE_SIZE_BYTES: 2 * 1024 * 1024, // 2MB
+    MAX_UPLOAD_FILE_SIZE_BYTES: 10 * 1024 * 1024, // 10MB
+    MAX_IMAGE_DIMENSION: 8000, // 8000px
   },
 };

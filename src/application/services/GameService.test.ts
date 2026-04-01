@@ -1,10 +1,41 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+  type Mock,
+} from 'vitest';
 import type { Game } from '../models/Game';
 import type { StartGame } from '../usecases/StartGame';
 import type { MoveTile } from '../usecases/MoveTile';
 import type { GameStoragePort } from '../ports/GameStoragePort';
 import type { ImageUrlPort } from '../ports/ImageUrlPort';
 import { GameService } from './GameService';
+
+function mockImageLoad(width = 1000, height = 1000) {
+  const originalImage = globalThis.Image;
+
+  class MockImage {
+    width = width;
+    height = height;
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+
+    set src(_value: string) {
+      setTimeout(() => {
+        this.onload?.();
+      }, 0);
+    }
+  }
+
+  globalThis.Image = MockImage as unknown as typeof Image;
+
+  return () => {
+    globalThis.Image = originalImage;
+  };
+}
 
 describe('GameService', () => {
   let startGameExecute: Mock<StartGame['execute']>;
@@ -16,6 +47,7 @@ describe('GameService', () => {
   let storageClear: Mock<GameStoragePort['clear']>;
   let storage: GameStoragePort;
   let imageUrlPort: ImageUrlPort;
+  let restoreImage: (() => void) | null;
 
   let service: GameService;
 
@@ -26,6 +58,8 @@ describe('GameService', () => {
   };
 
   beforeEach(() => {
+    restoreImage = mockImageLoad();
+
     startGameExecute = vi.fn();
 
     startGame = {
@@ -60,6 +94,13 @@ describe('GameService', () => {
     };
 
     service = new GameService(startGame, moveTile, storage, imageUrlPort);
+  });
+
+  afterEach(() => {
+    restoreImage?.();
+    restoreImage = null;
+
+    vi.restoreAllMocks();
   });
 
   it('init() returns saved game if exists', () => {

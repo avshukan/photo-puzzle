@@ -11,6 +11,7 @@ export function GamePage() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [tileSize, setTileSize] = useState(APP_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
+  const [error, setError] = useState<string | null>(null);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
@@ -27,13 +28,23 @@ export function GamePage() {
   }, [isModalOpen, closeModal]);
 
   const handleUpload = async (file: File) => {
-    const next = await gameService.startWithUpload(file);
+    try {
+      const next = await gameService.startWithUpload(file);
 
-    setGame(next);
+      setGame(next);
 
-    setIsModalOpen(true);
+      setError(null);
 
-    setIsPreviewOpen(false);
+      setIsModalOpen(true);
+
+      setIsPreviewOpen(false);
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError('Unexpected error');
+      }
+    }
   };
 
   const onTileClick = (fromIndex: number) => {
@@ -80,6 +91,23 @@ export function GamePage() {
           <UploadButton onUpload={handleUpload} />
         </div>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '8px 12px',
+            borderRadius: 8,
+            background: '#ffeaea',
+            border: '1px solid #ffbdbd',
+            color: '#b00020',
+            fontSize: 14,
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       <div style={{ height: 12 }} />
 
