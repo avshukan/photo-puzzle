@@ -61,7 +61,7 @@ function mockImageError() {
 vi.mock('../../app/config/app', () => ({
   APP_CONFIG: {
     GAME: {
-      MAX_FILE_SIZE_BYTES: 10 * 1024 * 1024,
+      MAX_UPLOAD_FILE_SIZE_BYTES: 10 * 1024 * 1024,
       MAX_IMAGE_DIMENSION: 8000,
     },
   },

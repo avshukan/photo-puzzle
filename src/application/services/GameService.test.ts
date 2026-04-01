@@ -189,7 +189,7 @@ describe('GameService', () => {
   });
 
   it('falls back to default when file exceeds size limit', async () => {
-    const content = new Uint8Array(3 * 1024 * 1024); // 3MB > 2MB limit
+    const content = new Uint8Array(30 * 1024 * 1024); // 30 MB
 
     const file = new File([content], 'large.png', { type: 'image/png' });
 

@@ -6,20 +6,18 @@ import {
 import { APP_CONFIG } from '../../app/config/app';
 
 export async function validateImage(file: File): Promise<void> {
-  const maxSizeBytes = APP_CONFIG.GAME.MAX_FILE_SIZE_BYTES;
+  const maxSizeBytes = APP_CONFIG.GAME.MAX_UPLOAD_FILE_SIZE_BYTES;
 
   const maxDimension = APP_CONFIG.GAME.MAX_IMAGE_DIMENSION;
 
   const loadTimeoutMs = 3000;
 
-  // 1. File size
   if (file.size > maxSizeBytes) {
     const maxMb = Math.round(maxSizeBytes / (1024 * 1024));
 
     throw new ImageTooLargeError(maxMb);
   }
 
-  // 2. Image resolution
   const img = new Image();
 
   const url = URL.createObjectURL(file);

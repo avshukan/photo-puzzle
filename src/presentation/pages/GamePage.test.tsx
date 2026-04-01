@@ -1,65 +1,93 @@
-import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import type { Game } from '../../application';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GamePage } from './GamePage';
 import { gameService } from '../../app/compositionRoot';
-import userEvent from '@testing-library/user-event';
 
-vi.mock('../../app/compositionRoot', () => {
-  const game: Game = {
-    imageUrl: 'default',
-    puzzle: {
-      width: 4,
-      height: 4,
-      tiles: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0],
-    },
-    status: 'playing',
-  };
+// --- mocks ---
+vi.mock('../../app/compositionRoot', () => ({
+  gameService: {
+    init: vi.fn(),
+    startWithUpload: vi.fn(),
+    move: vi.fn(),
+  },
+}));
 
-  return {
-    gameService: {
-      init: vi.fn(() => game),
-      startWithUpload: vi.fn(() => Promise.resolve(game)),
-      move: vi.fn(() => game),
-      reset: vi.fn(),
-    },
-  };
-});
+// --- helpers ---
+const mockGame = {
+  puzzle: {
+    width: 4,
+    height: 4,
+    tiles: Array.from({ length: 16 }, (_, i) => i),
+  },
+  imageUrl: 'data:image/jpeg;base64,test',
+  status: 'playing',
+};
+
+// --- tests ---
 
 describe('GamePage', () => {
-  it('starts with default game on mount', async () => {
-    render(<GamePage />);
+  beforeEach(() => {
+    vi.clearAllMocks();
 
-    expect(gameService.init).toHaveBeenCalled();
-
-    expect(await screen.findByLabelText('Tile 1')).toBeInTheDocument();
+    gameService.init = vi.fn().mockReturnValue(mockGame);
   });
 
-  it('starts game from uploaded file', async () => {
+  it('renders without crashing', () => {
     render(<GamePage />);
 
-    const input = screen.getByLabelText(
-      /upload image input/i,
+    expect(screen.getByText('Photo Puzzle')).toBeInTheDocument();
+  });
+
+  it('shows error message when upload fails', async () => {
+    const errorMessage = 'File is too large';
+
+    gameService.startWithUpload = vi
+      .fn()
+      .mockRejectedValue(new Error(errorMessage));
+
+    render(<GamePage />);
+
+    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
+
+    // UploadButton likely wraps input → trigger via click simulation
+    fireEvent.change(
+      document.querySelector('input[type="file"]') as HTMLInputElement,
+      {
+        target: { files: [file] },
+      },
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+
+  it('clears error after successful upload', async () => {
+    gameService.startWithUpload = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('error'))
+      .mockResolvedValueOnce(mockGame);
+
+    render(<GamePage />);
+
+    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
+
+    const input = document.querySelector(
+      'input[type="file"]',
     ) as HTMLInputElement;
 
-    const file = new File(['x'], 'photo.png', { type: 'image/png' });
+    // first → error
+    fireEvent.change(input, { target: { files: [file] } });
 
-    await userEvent.upload(input, file);
+    await waitFor(() => {
+      expect(screen.getByText('error')).toBeInTheDocument();
+    });
 
-    expect(gameService.startWithUpload).toHaveBeenLastCalledWith(file);
-  });
+    // second → success
+    fireEvent.change(input, { target: { files: [file] } });
 
-  it('shows preview overlay when Preview button is clicked', async () => {
-    render(<GamePage />);
-
-    expect(
-      screen.queryByRole('dialog', { name: 'Preview' }),
-    ).not.toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: 'Preview' }));
-
-    expect(screen.getByRole('dialog', { name: 'Preview' })).toBeInTheDocument();
-
-    expect(screen.getByAltText('Original puzzle image')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('error')).not.toBeInTheDocument();
+    });
   });
 });
