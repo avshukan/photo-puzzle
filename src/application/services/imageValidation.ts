@@ -10,14 +10,17 @@ const IMAGE_LOAD_TIMEOUT_MS = 3000;
 
 export async function validateImage(file: File): Promise<void> {
   const maxSizeBytes = APP_CONFIG.GAME.MAX_UPLOAD_FILE_SIZE_BYTES;
+
   const maxDimension = APP_CONFIG.GAME.MAX_IMAGE_DIMENSION;
 
   if (file.size > maxSizeBytes) {
     const maxMb = Math.round(maxSizeBytes / (1024 * 1024));
+
     throw new ImageTooLargeError(maxMb);
   }
 
   const img = new Image();
+
   const url = URL.createObjectURL(file);
 
   try {
@@ -29,11 +32,13 @@ export async function validateImage(file: File): Promise<void> {
 
       img.onload = () => {
         clearTimeout(timeoutId);
+
         resolve();
       };
 
       img.onerror = () => {
         clearTimeout(timeoutId);
+
         reject(new ImageLoadError());
       };
 

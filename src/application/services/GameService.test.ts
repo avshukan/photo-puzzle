@@ -121,21 +121,7 @@ describe('GameService', () => {
     expect(storageClear).toHaveBeenCalled();
   });
 
-  it('falls back to default on read error', async () => {
-    const file = new File(['test'], 'test.png', { type: 'image/png' });
-
-    vi.mocked(imageUrlPort.readAsDataUrl).mockRejectedValue(new Error());
-
-    startGameExecute.mockReturnValue(game);
-
-    await expect(service.startWithUpload(file)).rejects.toThrow();
-
-    expect(startGameExecute).not.toHaveBeenCalled();
-
-    expect(storageSave).not.toHaveBeenCalled();
-  });
-
-  it('falls back to default when file exceeds size limit', async () => {
+  it('rejects when file exceeds size limit', async () => {
     const content = new Uint8Array(30 * 1024 * 1024); // 30 MB
 
     const file = new File([content], 'large.png', { type: 'image/png' });

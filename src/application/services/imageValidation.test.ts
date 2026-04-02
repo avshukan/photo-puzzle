@@ -18,8 +18,11 @@ function mockImageLoad(width: number, height: number) {
 
   class MockImage {
     width = width;
+
     height = height;
+
     onload: (() => void) | null = null;
+
     onerror: (() => void) | null = null;
 
     set src(_value: string) {
@@ -41,6 +44,7 @@ function mockImageError() {
 
   class MockImage {
     onload: (() => void) | null = null;
+
     onerror: (() => void) | null = null;
 
     set src(_value: string) {
@@ -48,6 +52,24 @@ function mockImageError() {
         this.onerror?.();
       }, 0);
     }
+  }
+
+  globalThis.Image = MockImage as unknown as typeof Image;
+
+  return () => {
+    globalThis.Image = originalImage;
+  };
+}
+
+function mockImageNeverResolves() {
+  const originalImage = globalThis.Image;
+
+  class MockImage {
+    onload: (() => void) | null = null;
+
+    onerror: (() => void) | null = null;
+
+    set src(_value: string) {}
   }
 
   globalThis.Image = MockImage as unknown as typeof Image;
@@ -119,6 +141,16 @@ describe('validateImage', () => {
 
   it('should throw ImageLoadError when image fails to load', async () => {
     const restore = mockImageError();
+
+    const file = createFile(1024);
+
+    await expect(validateImage(file)).rejects.toBeInstanceOf(ImageLoadError);
+
+    restore();
+  });
+
+  it('should throw ImageLoadError when image never resolves', async () => {
+    const restore = mockImageNeverResolves();
 
     const file = createFile(1024);
 
