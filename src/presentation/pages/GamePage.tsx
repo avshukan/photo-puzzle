@@ -12,6 +12,7 @@ export function GamePage() {
   const [tileSize, setTileSize] = useState(APP_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
@@ -28,12 +29,14 @@ export function GamePage() {
   }, [isModalOpen, closeModal]);
 
   const handleUpload = async (file: File) => {
+    setError(null);
+
+    setIsUploading(true);
+
     try {
       const next = await gameService.startWithUpload(file);
 
       setGame(next);
-
-      setError(null);
 
       setIsModalOpen(true);
 
@@ -44,6 +47,8 @@ export function GamePage() {
       } else {
         setError('Unexpected error');
       }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -88,13 +93,14 @@ export function GamePage() {
             Preview
           </button>
 
-          <UploadButton onUpload={handleUpload} />
+          <UploadButton onUpload={handleUpload} disabled={isUploading} />
         </div>
       </div>
 
       {/* Error message */}
       {error && (
         <div
+          role="alert"
           style={{
             marginTop: 12,
             padding: '8px 12px',
@@ -174,7 +180,7 @@ export function GamePage() {
             <div style={{ height: 12 }} />
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <UploadButton onUpload={handleUpload} label="Upload new" />
+              <UploadButton onUpload={handleUpload} label="Upload new" disabled={isUploading} />
 
               <button
                 autoFocus

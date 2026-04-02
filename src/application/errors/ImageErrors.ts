@@ -12,6 +12,13 @@ export class ImageTooLargeError extends ImageValidationError {
   }
 }
 
+export class ImageTypeError extends ImageValidationError {
+  constructor() {
+    super('File is not a valid image');
+    this.name = 'ImageTypeError';
+  }
+}
+
 export class ImageWidthTooLargeError extends ImageValidationError {
   constructor(maxWidth: number) {
     super(`Image width is too large (max ${maxWidth}px)`);
@@ -26,7 +33,7 @@ export class ImageHeightTooLargeError extends ImageValidationError {
   }
 }
 
-export class ImageLoadError extends ImageValidationError {
+export class ImageLoadError extends Error {
   constructor() {
     super('Failed to load image');
     this.name = 'ImageLoadError';

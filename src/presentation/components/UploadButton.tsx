@@ -3,9 +3,14 @@ import { useRef } from 'react';
 type Props = {
   onUpload: (file: File) => void;
   label?: string;
+  disabled?: boolean;
 };
 
-export function UploadButton({ onUpload, label = 'Upload image' }: Props) {
+export function UploadButton({
+  onUpload,
+  label = 'Upload image',
+  disabled = false,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -23,13 +28,15 @@ export function UploadButton({ onUpload, label = 'Upload image' }: Props) {
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
+        disabled={disabled}
         style={{
           border: '1px solid #ddd',
           borderRadius: 8,
           padding: '6px 10px',
-          cursor: 'pointer',
+          cursor: disabled ? 'not-allowed' : 'pointer',
           fontSize: 14,
           background: 'transparent',
+          opacity: disabled ? 0.5 : 1,
         }}
       >
         {label}

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { validateImage } from './imageValidation';
 import {
   ImageTooLargeError,
+  ImageTypeError,
   ImageWidthTooLargeError,
   ImageHeightTooLargeError,
   ImageLoadError,
@@ -100,11 +101,13 @@ describe('validateImage', () => {
   it('should pass for valid image', async () => {
     const restore = mockImageLoad(1000, 1000);
 
-    const file = createFile(1024);
+    try {
+      const file = createFile(1024);
 
-    await expect(validateImage(file)).resolves.toBeUndefined();
-
-    restore();
+      await expect(validateImage(file)).resolves.toBeUndefined();
+    } finally {
+      restore();
+    }
   });
 
   it('should throw ImageTooLargeError for large file', async () => {
@@ -115,47 +118,73 @@ describe('validateImage', () => {
     );
   });
 
+  it('should throw ImageTypeError for non-image file', async () => {
+    const file = new File(['data'], 'document.pdf', {
+      type: 'application/pdf',
+    });
+
+    await expect(validateImage(file)).rejects.toBeInstanceOf(ImageTypeError);
+  });
+
   it('should throw ImageWidthTooLargeError', async () => {
     const restore = mockImageLoad(9000, 1000);
 
-    const file = createFile(1024);
+    try {
+      const file = createFile(1024);
 
-    await expect(validateImage(file)).rejects.toBeInstanceOf(
-      ImageWidthTooLargeError,
-    );
-
-    restore();
+      await expect(validateImage(file)).rejects.toBeInstanceOf(
+        ImageWidthTooLargeError,
+      );
+    } finally {
+      restore();
+    }
   });
 
   it('should throw ImageHeightTooLargeError', async () => {
     const restore = mockImageLoad(1000, 9000);
 
-    const file = createFile(1024);
+    try {
+      const file = createFile(1024);
 
-    await expect(validateImage(file)).rejects.toBeInstanceOf(
-      ImageHeightTooLargeError,
-    );
-
-    restore();
+      await expect(validateImage(file)).rejects.toBeInstanceOf(
+        ImageHeightTooLargeError,
+      );
+    } finally {
+      restore();
+    }
   });
 
   it('should throw ImageLoadError when image fails to load', async () => {
     const restore = mockImageError();
 
-    const file = createFile(1024);
+    try {
+      const file = createFile(1024);
 
-    await expect(validateImage(file)).rejects.toBeInstanceOf(ImageLoadError);
-
-    restore();
+      await expect(validateImage(file)).rejects.toBeInstanceOf(ImageLoadError);
+    } finally {
+      restore();
+    }
   });
 
   it('should throw ImageLoadError when image never resolves', async () => {
+    vi.useFakeTimers();
+
     const restore = mockImageNeverResolves();
 
-    const file = createFile(1024);
+    try {
+      const file = createFile(1024);
 
-    await expect(validateImage(file)).rejects.toBeInstanceOf(ImageLoadError);
+      const promise = validateImage(file);
 
-    restore();
+      const expectation = expect(promise).rejects.toBeInstanceOf(ImageLoadError);
+
+      await vi.runAllTimersAsync();
+
+      await expectation;
+    } finally {
+      restore();
+
+      vi.useRealTimers();
+    }
   });
 });

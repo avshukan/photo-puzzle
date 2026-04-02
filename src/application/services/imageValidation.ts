@@ -1,12 +1,13 @@
 import {
   ImageTooLargeError,
+  ImageTypeError,
   ImageWidthTooLargeError,
   ImageHeightTooLargeError,
   ImageLoadError,
 } from '../errors/ImageErrors';
 import { APP_CONFIG } from '../../app/config/app';
 
-const IMAGE_LOAD_TIMEOUT_MS = 3000;
+export const IMAGE_LOAD_TIMEOUT_MS = 3000;
 
 export async function validateImage(file: File): Promise<void> {
   const maxSizeBytes = APP_CONFIG.GAME.MAX_UPLOAD_FILE_SIZE_BYTES;
@@ -19,11 +20,17 @@ export async function validateImage(file: File): Promise<void> {
     throw new ImageTooLargeError(maxMb);
   }
 
+  if (!file.type.startsWith('image/')) {
+    throw new ImageTypeError();
+  }
+
   const img = new Image();
 
-  const url = URL.createObjectURL(file);
+  let url = '';
 
   try {
+    url = URL.createObjectURL(file);
+
     await new Promise<void>((resolve, reject) => {
       const timeoutId = setTimeout(
         () => reject(new ImageLoadError()),
@@ -53,6 +60,6 @@ export async function validateImage(file: File): Promise<void> {
       throw new ImageHeightTooLargeError(maxDimension);
     }
   } finally {
-    URL.revokeObjectURL(url);
+    if (url) URL.revokeObjectURL(url);
   }
 }
