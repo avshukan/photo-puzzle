@@ -11,6 +11,8 @@ export function GamePage() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [tileSize, setTileSize] = useState(APP_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
+  const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
@@ -27,13 +29,27 @@ export function GamePage() {
   }, [isModalOpen, closeModal]);
 
   const handleUpload = async (file: File) => {
-    const next = await gameService.startWithUpload(file);
+    setError(null);
 
-    setGame(next);
+    setIsUploading(true);
 
-    setIsModalOpen(true);
+    try {
+      const next = await gameService.startWithUpload(file);
 
-    setIsPreviewOpen(false);
+      setGame(next);
+
+      setIsModalOpen(true);
+
+      setIsPreviewOpen(false);
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError('Unexpected error');
+      }
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const onTileClick = (fromIndex: number) => {
@@ -77,9 +93,27 @@ export function GamePage() {
             Preview
           </button>
 
-          <UploadButton onUpload={handleUpload} />
+          <UploadButton onUpload={handleUpload} disabled={isUploading} />
         </div>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div
+          role="alert"
+          style={{
+            marginTop: 12,
+            padding: '8px 12px',
+            borderRadius: 8,
+            background: '#ffeaea',
+            border: '1px solid #ffbdbd',
+            color: '#b00020',
+            fontSize: 14,
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       <div style={{ height: 12 }} />
 
@@ -146,7 +180,11 @@ export function GamePage() {
             <div style={{ height: 12 }} />
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <UploadButton onUpload={handleUpload} label="Upload new" />
+              <UploadButton
+                onUpload={handleUpload}
+                label="Upload new"
+                disabled={isUploading}
+              />
 
               <button
                 autoFocus

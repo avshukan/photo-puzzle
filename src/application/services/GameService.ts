@@ -3,7 +3,7 @@ import type { StartGame } from '../usecases/StartGame';
 import type { MoveTile } from '../usecases/MoveTile';
 import type { GameStoragePort } from '../ports/GameStoragePort';
 import type { ImageUrlPort } from '../ports/ImageUrlPort';
-import { APP_CONFIG } from '../../app/config/app';
+import { validateImage } from './imageValidation';
 
 export class GameService {
   private readonly startGame: StartGame;
@@ -38,28 +38,18 @@ export class GameService {
   }
 
   async startWithUpload(file: File): Promise<Game> {
-    try {
-      if (file.size > APP_CONFIG.GAME.MAX_FILE_SIZE_BYTES) {
-        throw new Error('File too large');
-      }
+    await validateImage(file);
 
-      const imageUrl = await this.imageUrlPort.readAsDataUrl(file);
+    const imageUrl = await this.imageUrlPort.readAsDataUrl(file);
 
-      const game = this.startGame.execute({
-        kind: 'upload',
-        imageUrl,
-      });
+    const game = this.startGame.execute({
+      kind: 'upload',
+      imageUrl,
+    });
 
-      this.storage.save(game);
+    this.storage.save(game);
 
-      return game;
-    } catch {
-      const game = this.startGame.execute({ kind: 'default' });
-
-      this.storage.save(game);
-
-      return game;
-    }
+    return game;
   }
 
   move(game: Game, fromIndex: number): Game {
@@ -73,4 +63,12 @@ export class GameService {
   reset(): void {
     this.storage.clear();
   }
+
+  // private startDefaultGame(): Game {
+  //   const game = this.startGame.execute({ kind: 'default' });
+
+  //   this.storage.save(game);
+
+  //   return game;
+  // }
 }

@@ -13,10 +13,10 @@ This document describes current technical and UX limitations of the project.
 
 ## Upload
 
-- Maximum file size: **2MB** (defined in config)
-- Files larger than 2MB are ignored
-- In case of error (size limit, read failure), the game falls back to a default image
-- No user-visible error feedback is shown
+- Maximum file size: 10MB
+- Maximum resolution: 8000px
+- Files exceeding limits are rejected
+- User sees an error message (no silent fallback)
 
 ---
 
