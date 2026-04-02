@@ -180,7 +180,11 @@ export function GamePage() {
             <div style={{ height: 12 }} />
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <UploadButton onUpload={handleUpload} label="Upload new" disabled={isUploading} />
+              <UploadButton
+                onUpload={handleUpload}
+                label="Upload new"
+                disabled={isUploading}
+              />
 
               <button
                 autoFocus

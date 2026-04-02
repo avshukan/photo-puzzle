@@ -176,7 +176,8 @@ describe('validateImage', () => {
 
       const promise = validateImage(file);
 
-      const expectation = expect(promise).rejects.toBeInstanceOf(ImageLoadError);
+      const expectation =
+        expect(promise).rejects.toBeInstanceOf(ImageLoadError);
 
       await vi.runAllTimersAsync();
 
