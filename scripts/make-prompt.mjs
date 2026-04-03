@@ -21,10 +21,10 @@ function getArgValue(flag) {
 const outArg = getArgValue('--out');
 const outFile = path.resolve(ROOT, outArg ?? 'prompt.txt');
 
-// Минимальный набор (контекст + ключевой код)
+// --- include sets ---
+
 const INCLUDE_MIN = ['README.md', 'CHANGELOG.md', 'package.json', 'docs'];
 
-// Основной код (без тестов, конфигов, документации и т.п.)
 const INCLUDE_SRC = [
   'src/domain',
   'src/application',
@@ -37,7 +37,6 @@ const INCLUDE_SRC = [
   'src/main.tsx',
 ];
 
-// Полный набор (добавляем tooling/CI)
 const INCLUDE_FULL_EXTRA = [
   '.github/workflows',
   'vite.config.ts',
@@ -54,7 +53,8 @@ const INCLUDE = [
   ...(isFull ? INCLUDE_FULL_EXTRA : []),
 ];
 
-// Исключения
+// --- exclude rules ---
+
 const EXCLUDE_DIRS = new Set([
   'node_modules',
   '.git',
@@ -84,9 +84,11 @@ function rel(p) {
 
 function isExcluded(filePath) {
   const base = path.basename(filePath);
+
   if (EXCLUDE_FILES.has(base)) return true;
 
   const ext = path.extname(base).toLowerCase();
+
   if (EXCLUDE_EXT.has(ext)) return true;
 
   // exclude tests
@@ -97,6 +99,7 @@ function isExcluded(filePath) {
 
 function walk(dir) {
   const res = [];
+
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
 
@@ -109,14 +112,17 @@ function walk(dir) {
     if (isExcluded(full)) continue;
     res.push(full);
   }
+
   return res;
 }
 
 function collect(item) {
   const full = path.join(ROOT, item);
+
   if (!fs.existsSync(full)) return [];
 
   const stat = fs.statSync(full);
+
   if (stat.isDirectory()) return walk(full);
   if (stat.isFile()) return isExcluded(full) ? [] : [full];
 
@@ -126,15 +132,28 @@ function collect(item) {
 function safeRead(file) {
   const stat = fs.statSync(file);
   const maxBytes = 200_000;
+
   if (stat.size > maxBytes) {
     return `<<skipped: file too large (${stat.size} bytes)>>`;
   }
+
   return fs.readFileSync(file, 'utf8');
 }
 
 function readIntro() {
   if (!fs.existsSync(INTRO_FILE)) return '';
   return fs.readFileSync(INTRO_FILE, 'utf8').trimEnd();
+}
+
+// ✅ NEW: highlight current iteration file
+function detectIteration(files) {
+  const iterFiles = files.filter((f) =>
+    rel(f).includes('docs/iterations/iter-'),
+  );
+
+  if (iterFiles.length === 0) return null;
+
+  return iterFiles.sort().at(-1);
 }
 
 function main() {
@@ -145,7 +164,9 @@ function main() {
   );
 
   let out = '';
+
   const intro = readIntro();
+
   if (intro) {
     out += intro + '\n\n---\n\n';
   }
@@ -155,11 +176,19 @@ function main() {
   out += `Repo: ${path.basename(ROOT)}\n`;
   out += `Mode: ${isFull ? 'full' : 'minimal'}${noSrc ? ' (no-src)' : ''}\n`;
 
+  // ✅ NEW: show current iteration
+  const currentIter = detectIteration(uniq);
+
+  if (currentIter) {
+    out += `Current iteration: ${rel(currentIter)}\n`;
+  }
+
   out += '\n\n## Included files\n';
   out += uniq.map((f) => `- ${rel(f)}`).join('\n');
   out += '\n';
 
   out += '\n\n## Files\n';
+
   for (const file of uniq) {
     out += `\n\n=== ${rel(file)} ===\n`;
     out += safeRead(file);
@@ -167,6 +196,7 @@ function main() {
   }
 
   fs.writeFileSync(outFile, out, 'utf8');
+
   console.log(`OK: ${rel(outFile)}`);
 }
 
