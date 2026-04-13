@@ -7,7 +7,7 @@ import {
 } from '../errors/ImageErrors';
 import { APP_CONFIG } from '../../app/config/app';
 
-export const IMAGE_LOAD_TIMEOUT_MS = 3000;
+export const IMAGE_LOAD_TIMEOUT_MS = APP_CONFIG.GAME.IMAGE_LOAD_TIMEOUT_MS;
 
 export async function validateImage(file: File): Promise<void> {
   const maxSizeBytes = APP_CONFIG.GAME.MAX_UPLOAD_FILE_SIZE_BYTES;

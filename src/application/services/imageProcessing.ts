@@ -1,9 +1,10 @@
 import { ImageLoadError } from '../errors/ImageErrors';
+import { APP_CONFIG } from '../../app/config/app';
 
 export const NORMALIZATION_MAX_DIMENSION = 1024;
-export const NORMALIZATION_MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024; // 1MB
+export const NORMALIZATION_MAX_FILE_SIZE_BYTES = 1024 * 1024; // 1MB
 export const NORMALIZATION_JPEG_QUALITY = 0.75;
-export const IMAGE_LOAD_TIMEOUT_MS = 3000;
+export const IMAGE_LOAD_TIMEOUT_MS = APP_CONFIG.GAME.IMAGE_LOAD_TIMEOUT_MS;
 
 export type ImageDimensions = Readonly<{
   width: number;

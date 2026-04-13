@@ -17,6 +17,9 @@ export const APP_CONFIG = {
     // Image constraints
     MAX_IMAGE_DIMENSION: 8000, // px
 
+    // Timeout for image load operations (ms)
+    IMAGE_LOAD_TIMEOUT_MS: 3000,
+
     // (future, Iteration 2 - storage)
     MAX_STORAGE_IMAGE_SIZE_BYTES: 2 * 1024 * 1024, // 2MB (base64 target)
   },
