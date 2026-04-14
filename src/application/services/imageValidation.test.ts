@@ -87,6 +87,7 @@ vi.mock('../../app/config/app', () => ({
     GAME: {
       MAX_UPLOAD_FILE_SIZE_BYTES: 10 * 1024 * 1024,
       MAX_IMAGE_DIMENSION: 8000,
+      IMAGE_LOAD_TIMEOUT_MS: 3000,
     },
   },
 }));

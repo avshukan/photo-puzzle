@@ -92,6 +92,8 @@ Legend:
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
 |  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
 |  34 | Add random images source                          | Value    | Low      | Optional mode                        |
+|  35 | Avoid redundant image loads in upload pipeline    | Refactor | Low      | Reuse loaded image                   |
+|  36 | Dead `readAsDataUrl` in `BrowserImageUrlAdapter`  | Refactor | Low      | Remove `readAsDataUrl`               |
 
 ---
 
