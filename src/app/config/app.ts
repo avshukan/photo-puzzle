@@ -11,16 +11,19 @@ export const APP_CONFIG = {
   },
 
   GAME: {
-    // Input (upload) limit
+    // Input validation
     MAX_UPLOAD_FILE_SIZE_BYTES: 10 * 1024 * 1024, // 10MB
-
-    // Image constraints
     MAX_IMAGE_DIMENSION: 8000, // px
 
-    // Timeout for image load operations (ms)
+    // Image loading
     IMAGE_LOAD_TIMEOUT_MS: 3000,
 
-    // (future, Iteration 2 - storage)
+    // Image normalization
+    NORMALIZATION_MAX_DIMENSION: 1024, // px
+    NORMALIZATION_MAX_FILE_SIZE_BYTES: 1 * 1024 * 1024, // 1MB
+    NORMALIZATION_JPEG_QUALITY: 0.75,
+
+    // Future: Iteration 2 - storage fit
     MAX_STORAGE_IMAGE_SIZE_BYTES: 2 * 1024 * 1024, // 2MB (base64 target)
   },
 };

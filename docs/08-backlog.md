@@ -92,10 +92,8 @@ Legend:
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
 |  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
 |  34 | Add random images source                          | Value    | Low      | Optional mode                        |
-|  35 | Avoid redundant image loads in upload pipeline    | Refactor | Low      | validateImage + readImageDimensions + transformImage each load the image independently (up to 3 loads); pass loaded HTMLImageElement through the pipeline instead |
-|  36 | Add `ImageProcessingError` for canvas failures    | Quality  | Low      | `ImageLoadError` is thrown on `canvas.getContext('2d') === null`; add a semantically correct error type (PR #39 review) |
-|  37 | Remove or document dead `readAsDataUrl` in `BrowserImageUrlAdapter` | Refactor | Low | After ID-30 refactor, `readAsDataUrl` is no longer called by `GameService`; either remove it from the port and adapter or document intent |
-|  38 | Document two-tier image validation threshold design | Quality  | Low    | Add comments explaining why validateImage rejects >8000 px while processImage silently normalises >1024 px (PR #39 review) |
+|  35 | Avoid redundant image loads in upload pipeline    | Refactor | Low      | Reuse loaded image                   |
+|  36 | Dead `readAsDataUrl` in `BrowserImageUrlAdapter`  | Refactor | Low      | Remove `readAsDataUrl`               |
 
 ---
 

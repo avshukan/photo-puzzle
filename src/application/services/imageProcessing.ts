@@ -1,10 +1,16 @@
-import { ImageLoadError } from '../errors/ImageErrors';
+import { ImageLoadError, ImageProcessingError } from '../errors/ImageErrors';
 import { APP_CONFIG } from '../../app/config/app';
 
-export const NORMALIZATION_MAX_DIMENSION = 1024;
-export const NORMALIZATION_MAX_FILE_SIZE_BYTES = 1024 * 1024; // 1MB
-export const NORMALIZATION_JPEG_QUALITY = 0.75;
 export const IMAGE_LOAD_TIMEOUT_MS = APP_CONFIG.GAME.IMAGE_LOAD_TIMEOUT_MS;
+
+export const NORMALIZATION_MAX_DIMENSION =
+  APP_CONFIG.GAME.NORMALIZATION_MAX_DIMENSION;
+
+export const NORMALIZATION_MAX_FILE_SIZE_BYTES =
+  APP_CONFIG.GAME.NORMALIZATION_MAX_FILE_SIZE_BYTES;
+
+export const NORMALIZATION_JPEG_QUALITY =
+  APP_CONFIG.GAME.NORMALIZATION_JPEG_QUALITY;
 
 export type ImageDimensions = Readonly<{
   width: number;
@@ -91,13 +97,15 @@ export async function transformImage(
     );
 
     const canvas = document.createElement('canvas');
+
     canvas.width = target.width;
+
     canvas.height = target.height;
 
     const context = canvas.getContext('2d');
 
     if (!context) {
-      throw new ImageLoadError();
+      throw new ImageProcessingError();
     }
 
     context.drawImage(image, 0, 0, target.width, target.height);
@@ -127,6 +135,7 @@ export function calculateTargetDimensions(
 
   if (width >= height) {
     const nextWidth = maxDimension;
+
     const nextHeight = Math.round((height / width) * maxDimension);
 
     return {
@@ -136,6 +145,7 @@ export function calculateTargetDimensions(
   }
 
   const nextHeight = maxDimension;
+
   const nextWidth = Math.round((width / height) * maxDimension);
 
   return {

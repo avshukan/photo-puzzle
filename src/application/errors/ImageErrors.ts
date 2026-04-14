@@ -39,3 +39,10 @@ export class ImageLoadError extends ImageValidationError {
     this.name = 'ImageLoadError';
   }
 }
+
+export class ImageProcessingError extends ImageValidationError {
+  constructor() {
+    super('Failed to process image');
+    this.name = 'ImageProcessingError';
+  }
+}

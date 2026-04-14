@@ -8,7 +8,7 @@ import {
   NORMALIZATION_MAX_DIMENSION,
   NORMALIZATION_MAX_FILE_SIZE_BYTES,
 } from './imageProcessing';
-import { ImageLoadError } from '../errors/ImageErrors';
+import { ImageLoadError, ImageProcessingError } from '../errors/ImageErrors';
 
 function createFile(
   size: number,
@@ -290,8 +290,9 @@ describe('imageProcessing', () => {
       }
     });
 
-    it('throws ImageLoadError when canvas context is unavailable', async () => {
+    it('throws ImageProcessingError when canvas context is unavailable', async () => {
       const restoreImage = mockImageLoad(2000, 1000);
+      const originalCreateElement = document.createElement.bind(document);
 
       vi.spyOn(document, 'createElement').mockImplementation(((
         tagName: string,
@@ -304,7 +305,7 @@ describe('imageProcessing', () => {
           } as unknown as HTMLCanvasElement;
         }
 
-        return document.createElement(tagName);
+        return originalCreateElement(tagName);
       }) as typeof document.createElement);
 
       const file = createFile(1024);
@@ -315,7 +316,7 @@ describe('imageProcessing', () => {
             maxDimension: 1024,
             quality: 0.75,
           }),
-        ).rejects.toBeInstanceOf(ImageLoadError);
+        ).rejects.toBeInstanceOf(ImageProcessingError);
       } finally {
         restoreImage();
       }
