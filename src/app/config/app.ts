@@ -20,7 +20,7 @@ export const APP_CONFIG = {
 
     // Image normalization
     NORMALIZATION_MAX_DIMENSION: 1024, // px
-    NORMALIZATION_MAX_FILE_SIZE_BYTES: 1 * 1024 * 1024, // 1MB
+    NORMALIZATION_MAX_FILE_SIZE_BYTES: 1024 * 1024, // 1MB
     NORMALIZATION_JPEG_QUALITY: 0.75,
 
     // Future: Iteration 2 - storage fit
