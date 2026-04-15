@@ -42,4 +42,5 @@ We use **Incremental Delivery**:
 - Keep answers short and practical
 - Focus on current iteration scope
 - Do not suggest features outside iteration unless critical
+- If the prompt bundle is generated with custom paths, use only provided files and repository tree as context
 - Ask only for files you really need
