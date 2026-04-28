@@ -15,6 +15,7 @@ Improve reliability of image handling and make replay easier.
 |  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
 |  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 |  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
+|  37 | Use `browser-image-validator` for upload checks   | Refactor | High     | Replace custom validation service    |
 
 ## Key Decisions
 
@@ -26,6 +27,10 @@ Adopt image handling model:
 3. Fit: ≤2MB (else 800px → retry)
 4. Fallback: play without persistence
 ```
+
+Use [`browser-image-validator`](https://www.npmjs.com/package/browser-image-validator)
+for upload validation instead of maintaining custom file type, size, dimension, and
+image load checks inside the app.
 
 ---
 
@@ -116,9 +121,11 @@ User sees:
 
 1. Input validation (ID 19)
 2. Image processing (ID 30)
-3. Storage handling (ID 32)
-4. Error UX (ID 31)
-5. UX improvements (ID 1, 11)
+3. Favicon (ID 11)
+4. Replace custom validation with `browser-image-validator` (ID 37)
+5. Storage handling (ID 32)
+6. Error UX (ID 31)
+7. UX improvements (ID 1)
 
 ---
 
@@ -134,6 +141,7 @@ User sees:
 
 - All scope items are implemented and merged
 - Invalid files are rejected with clear errors
+- Upload validation uses `browser-image-validator`
 - Images are resized and compressed correctly
 - Storage overflow does not break the game
 - Fallback behavior works (no persistence)

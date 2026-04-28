@@ -139,11 +139,7 @@ const EXCLUDE_DIRS = new Set([
   '.vite',
 ]);
 
-const EXCLUDE_FILES = new Set([
-  'package-lock.json',
-  '.DS_Store',
-  'prompt.txt',
-]);
+const EXCLUDE_FILES = new Set(['package-lock.json', '.DS_Store', 'prompt.txt']);
 
 const BINARY_EXT = new Set([
   '.png',
@@ -167,7 +163,9 @@ function isExplicitlyIncluded(filePath) {
   return customPaths.some((item) => {
     const normalized = item.replaceAll('\\', '/');
 
-    return relativePath === normalized || relativePath.startsWith(`${normalized}/`);
+    return (
+      relativePath === normalized || relativePath.startsWith(`${normalized}/`)
+    );
   });
 }
 
