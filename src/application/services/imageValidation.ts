@@ -1,3 +1,4 @@
+import { validateImage as browserValidateImage } from 'browser-image-validator';
 import {
   ImageTooLargeError,
   ImageTypeError,
@@ -7,59 +8,37 @@ import {
 } from '../errors/ImageErrors';
 import { APP_CONFIG } from '../../app/config/app';
 
-export const IMAGE_LOAD_TIMEOUT_MS = APP_CONFIG.GAME.IMAGE_LOAD_TIMEOUT_MS;
-
 export async function validateImage(file: File): Promise<void> {
   const maxSizeBytes = APP_CONFIG.GAME.MAX_UPLOAD_FILE_SIZE_BYTES;
 
   const maxDimension = APP_CONFIG.GAME.MAX_IMAGE_DIMENSION;
 
-  if (file.size > maxSizeBytes) {
-    const maxMb = Math.round(maxSizeBytes / (1024 * 1024));
-
-    throw new ImageTooLargeError(maxMb);
-  }
-
   if (!file.type.startsWith('image/')) {
     throw new ImageTypeError();
   }
 
-  const img = new Image();
+  const result = await browserValidateImage(file, {
+    maxFileSizeBytes: maxSizeBytes,
+    dimensions: {
+      maxWidth: maxDimension,
+      maxHeight: maxDimension,
+    },
+  });
 
-  let url = '';
+  if (!result.valid) {
+    const firstError = result.errors[0];
 
-  try {
-    url = URL.createObjectURL(file);
-
-    await new Promise<void>((resolve, reject) => {
-      const timeoutId = setTimeout(
-        () => reject(new ImageLoadError()),
-        IMAGE_LOAD_TIMEOUT_MS,
-      );
-
-      img.onload = () => {
-        clearTimeout(timeoutId);
-
-        resolve();
-      };
-
-      img.onerror = () => {
-        clearTimeout(timeoutId);
-
-        reject(new ImageLoadError());
-      };
-
-      img.src = url;
-    });
-
-    if (img.width > maxDimension) {
-      throw new ImageWidthTooLargeError(maxDimension);
+    switch (firstError.code) {
+      case 'FILE_TOO_LARGE':
+        throw new ImageTooLargeError(Math.round(maxSizeBytes / (1024 * 1024)));
+      case 'IMAGE_WIDTH_TOO_LARGE':
+        throw new ImageWidthTooLargeError(maxDimension);
+      case 'IMAGE_HEIGHT_TOO_LARGE':
+        throw new ImageHeightTooLargeError(maxDimension);
+      case 'IMAGE_LOAD_FAILED':
+        throw new ImageLoadError();
+      default:
+        throw new ImageLoadError();
     }
-
-    if (img.height > maxDimension) {
-      throw new ImageHeightTooLargeError(maxDimension);
-    }
-  } finally {
-    if (url) URL.revokeObjectURL(url);
   }
 }
