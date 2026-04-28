@@ -73,6 +73,7 @@ vi.mock('../../app/config/app', () => ({
     GAME: {
       MAX_UPLOAD_FILE_SIZE_BYTES: 10 * 1024 * 1024,
       MAX_IMAGE_DIMENSION: 8000,
+      IMAGE_LOAD_TIMEOUT_MS: 3000,
     },
   },
 }));
@@ -155,6 +156,39 @@ describe('validateImage', () => {
       await expect(validateImage(file)).rejects.toBeInstanceOf(ImageLoadError);
     } finally {
       restore();
+    }
+  });
+
+  it('should throw ImageLoadError when image never resolves', async () => {
+    vi.useFakeTimers();
+
+    const originalImage = globalThis.Image;
+
+    class MockImageNeverResolves {
+      onload: (() => void) | null = null;
+
+      onerror: (() => void) | null = null;
+
+      set src(_value: string) {}
+    }
+
+    globalThis.Image = MockImageNeverResolves as unknown as typeof Image;
+
+    try {
+      const file = createFile(1024);
+
+      const promise = validateImage(file);
+
+      const expectation =
+        expect(promise).rejects.toBeInstanceOf(ImageLoadError);
+
+      await vi.runAllTimersAsync();
+
+      await expectation;
+    } finally {
+      globalThis.Image = originalImage;
+
+      vi.useRealTimers();
     }
   });
 });
