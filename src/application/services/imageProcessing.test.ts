@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import {
   processImage,
+  fitImageForStorage,
   shouldNormalize,
   readImageDimensions,
   transformImage,
   calculateTargetDimensions,
   NORMALIZATION_MAX_DIMENSION,
   NORMALIZATION_MAX_FILE_SIZE_BYTES,
+  MAX_STORAGE_IMAGE_SIZE_BYTES,
+  FIT_FALLBACK_MAX_DIMENSION,
 } from './imageProcessing';
 import { ImageLoadError, ImageProcessingError } from '../errors/ImageErrors';
 
@@ -373,6 +376,77 @@ describe('imageProcessing', () => {
       } finally {
         restoreImage();
         restoreReader();
+      }
+    });
+  });
+
+  describe('fitImageForStorage', () => {
+    it('returns canStore=true and original dataUrl when dataUrl is within size limit', async () => {
+      const file = createFile(1024);
+      const smallDataUrl = 'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES - 1);
+
+      const result = await fitImageForStorage(file, smallDataUrl);
+
+      expect(result).toEqual({ dataUrl: smallDataUrl, canStore: true });
+    });
+
+    it('returns canStore=true with fallback dataUrl when 1024px result is too large but 800px fits', async () => {
+      const file = createFile(1024);
+      const largeDataUrl = 'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES + 1);
+      const fallbackDataUrl = 'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES - 1);
+      const restoreImage = mockImageLoad(2000, 1500);
+
+      mockCanvas(fallbackDataUrl);
+
+      try {
+        const result = await fitImageForStorage(file, largeDataUrl);
+
+        expect(result).toEqual({ dataUrl: fallbackDataUrl, canStore: true });
+      } finally {
+        restoreImage();
+      }
+    });
+
+    it('returns canStore=false with original dataUrl when both 1024px and 800px results exceed limit', async () => {
+      const file = createFile(1024);
+      const largeDataUrl = 'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES + 1);
+      const stillLargeDataUrl = 'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES + 1);
+      const restoreImage = mockImageLoad(2000, 1500);
+
+      mockCanvas(stillLargeDataUrl);
+
+      try {
+        const result = await fitImageForStorage(file, largeDataUrl);
+
+        expect(result).toEqual({ dataUrl: largeDataUrl, canStore: false });
+      } finally {
+        restoreImage();
+      }
+    });
+
+    it('calls transformImage with FIT_FALLBACK_MAX_DIMENSION when primary dataUrl is too large', async () => {
+      const file = createFile(1024);
+      const largeDataUrl = 'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES + 1);
+      const restoreImage = mockImageLoad(2000, 1500);
+      const { toDataURL } = mockCanvas(
+        'x'.repeat(MAX_STORAGE_IMAGE_SIZE_BYTES - 1),
+      );
+
+      try {
+        await fitImageForStorage(file, largeDataUrl);
+
+        expect(toDataURL).toHaveBeenCalled();
+
+        const expectedWidth = FIT_FALLBACK_MAX_DIMENSION;
+        const expectedHeight = Math.round(
+          (1500 / 2000) * FIT_FALLBACK_MAX_DIMENSION,
+        );
+
+        expect(toDataURL).toHaveBeenCalledWith('image/jpeg', expect.any(Number));
+        expect(expectedWidth).toBe(FIT_FALLBACK_MAX_DIMENSION);
+        expect(expectedHeight).toBe(600);
+      } finally {
+        restoreImage();
       }
     });
   });
