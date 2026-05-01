@@ -61,7 +61,6 @@ Legend:
 |   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
 |  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 |  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
-|  37 | Use `browser-image-validator` for upload checks   | Refactor | High     | Replace custom validation service    |
 
 ---
 
@@ -104,6 +103,7 @@ Legend:
 |  11 | Add proper favicon                                | Quality  | Medium   | Replace default                      |
 |  30 | Compress and resize images before storing         | Quality  | High     | Fit into localStorage                |
 |  19 | Reject extremely large files (safety limit)       | Quality  | Medium   | Guard on input (e.g. >10MB)          |
+|  37 | Use `browser-image-validator` for upload checks   | Refactor | High     | Replace custom validation service    |
 |  23 | Restore image after reload                        | Value    | High     | Uploaded image survives reload       |
 |   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |

@@ -1,3 +1,4 @@
+import { validateImage as browserValidateImage } from 'browser-image-validator';
 import {
   ImageTooLargeError,
   ImageTypeError,
@@ -14,52 +15,50 @@ export async function validateImage(file: File): Promise<void> {
 
   const maxDimension = APP_CONFIG.GAME.MAX_IMAGE_DIMENSION;
 
-  if (file.size > maxSizeBytes) {
-    const maxMb = Math.round(maxSizeBytes / (1024 * 1024));
-
-    throw new ImageTooLargeError(maxMb);
-  }
-
   if (!file.type.startsWith('image/')) {
     throw new ImageTypeError();
   }
 
-  const img = new Image();
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-  let url = '';
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new ImageLoadError()),
+      IMAGE_LOAD_TIMEOUT_MS,
+    );
+  });
 
   try {
-    url = URL.createObjectURL(file);
+    const result = await Promise.race([
+      browserValidateImage(file, {
+        maxFileSizeBytes: maxSizeBytes,
+        dimensions: {
+          maxWidth: maxDimension,
+          maxHeight: maxDimension,
+        },
+      }),
+      timeoutPromise,
+    ]);
 
-    await new Promise<void>((resolve, reject) => {
-      const timeoutId = setTimeout(
-        () => reject(new ImageLoadError()),
-        IMAGE_LOAD_TIMEOUT_MS,
-      );
+    if (!result.valid) {
+      const firstError = result.errors[0];
 
-      img.onload = () => {
-        clearTimeout(timeoutId);
-
-        resolve();
-      };
-
-      img.onerror = () => {
-        clearTimeout(timeoutId);
-
-        reject(new ImageLoadError());
-      };
-
-      img.src = url;
-    });
-
-    if (img.width > maxDimension) {
-      throw new ImageWidthTooLargeError(maxDimension);
-    }
-
-    if (img.height > maxDimension) {
-      throw new ImageHeightTooLargeError(maxDimension);
+      switch (firstError.code) {
+        case 'FILE_TOO_LARGE':
+          throw new ImageTooLargeError(
+            Math.round(maxSizeBytes / (1024 * 1024)),
+          );
+        case 'IMAGE_WIDTH_TOO_LARGE':
+          throw new ImageWidthTooLargeError(maxDimension);
+        case 'IMAGE_HEIGHT_TOO_LARGE':
+          throw new ImageHeightTooLargeError(maxDimension);
+        case 'IMAGE_LOAD_FAILED':
+          throw new ImageLoadError();
+        default:
+          throw new ImageLoadError();
+      }
     }
   } finally {
-    if (url) URL.revokeObjectURL(url);
+    clearTimeout(timeoutId);
   }
 }

@@ -18,9 +18,13 @@ function mockImageLoad(width: number, height: number) {
   const originalImage = globalThis.Image;
 
   class MockImage {
-    width = width;
+    width = 0;
 
-    height = height;
+    height = 0;
+
+    naturalWidth = width;
+
+    naturalHeight = height;
 
     onload: (() => void) | null = null;
 
@@ -62,24 +66,6 @@ function mockImageError() {
   };
 }
 
-function mockImageNeverResolves() {
-  const originalImage = globalThis.Image;
-
-  class MockImage {
-    onload: (() => void) | null = null;
-
-    onerror: (() => void) | null = null;
-
-    set src(_value: string) {}
-  }
-
-  globalThis.Image = MockImage as unknown as typeof Image;
-
-  return () => {
-    globalThis.Image = originalImage;
-  };
-}
-
 // --- config mock ---
 
 vi.mock('../../app/config/app', () => ({
@@ -112,11 +98,17 @@ describe('validateImage', () => {
   });
 
   it('should throw ImageTooLargeError for large file', async () => {
-    const file = createFile(11 * 1024 * 1024);
+    const restore = mockImageLoad(1000, 1000);
 
-    await expect(validateImage(file)).rejects.toBeInstanceOf(
-      ImageTooLargeError,
-    );
+    try {
+      const file = createFile(11 * 1024 * 1024);
+
+      await expect(validateImage(file)).rejects.toBeInstanceOf(
+        ImageTooLargeError,
+      );
+    } finally {
+      restore();
+    }
   });
 
   it('should throw ImageTypeError for non-image file', async () => {
@@ -170,7 +162,17 @@ describe('validateImage', () => {
   it('should throw ImageLoadError when image never resolves', async () => {
     vi.useFakeTimers();
 
-    const restore = mockImageNeverResolves();
+    const originalImage = globalThis.Image;
+
+    class MockImageNeverResolves {
+      onload: (() => void) | null = null;
+
+      onerror: (() => void) | null = null;
+
+      set src(_value: string) {}
+    }
+
+    globalThis.Image = MockImageNeverResolves as unknown as typeof Image;
 
     try {
       const file = createFile(1024);
@@ -184,7 +186,7 @@ describe('validateImage', () => {
 
       await expectation;
     } finally {
-      restore();
+      globalThis.Image = originalImage;
 
       vi.useRealTimers();
     }
