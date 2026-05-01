@@ -1,7 +1,7 @@
 import type { Game } from '../models/Game';
 
 export interface GameStoragePort {
-  save(game: Game): void;
+  save(game: Game): boolean;
 
   load(): Game | null;
 

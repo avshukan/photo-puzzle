@@ -12,6 +12,7 @@ export function GamePage() {
   const [tileSize, setTileSize] = useState(APP_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
@@ -30,17 +31,24 @@ export function GamePage() {
 
   const handleUpload = async (file: File) => {
     setError(null);
+    setWarning(null);
 
     setIsUploading(true);
 
     try {
-      const next = await gameService.startWithUpload(file);
+      const { game: next, persisted } = await gameService.startWithUpload(file);
 
       setGame(next);
 
       setIsModalOpen(true);
 
       setIsPreviewOpen(false);
+
+      if (!persisted) {
+        setWarning(
+          'Image is too large to save. It will not persist after reload.',
+        );
+      }
     } catch (e) {
       if (e instanceof Error) {
         setError(e.message);
@@ -112,6 +120,24 @@ export function GamePage() {
           }}
         >
           {error}
+        </div>
+      )}
+
+      {/* Warning message */}
+      {warning && (
+        <div
+          role="alert"
+          style={{
+            marginTop: 12,
+            padding: '8px 12px',
+            borderRadius: 8,
+            background: '#fff8e1',
+            border: '1px solid #ffe082',
+            color: '#7a5800',
+            fontSize: 14,
+          }}
+        >
+          {warning}
         </div>
       )}
 

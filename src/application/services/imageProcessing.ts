@@ -12,6 +12,12 @@ export const NORMALIZATION_MAX_FILE_SIZE_BYTES =
 export const NORMALIZATION_JPEG_QUALITY =
   APP_CONFIG.GAME.NORMALIZATION_JPEG_QUALITY;
 
+export const MAX_STORAGE_IMAGE_SIZE_BYTES =
+  APP_CONFIG.GAME.MAX_STORAGE_IMAGE_SIZE_BYTES;
+
+export const FIT_FALLBACK_MAX_DIMENSION =
+  APP_CONFIG.GAME.FIT_FALLBACK_MAX_DIMENSION;
+
 export type ImageDimensions = Readonly<{
   width: number;
   height: number;
@@ -27,6 +33,11 @@ export type ProcessedImage = Readonly<{
   width: number;
   height: number;
   wasTransformed: boolean;
+}>;
+
+export type StorageFitResult = Readonly<{
+  dataUrl: string;
+  canStore: boolean;
 }>;
 
 export async function processImage(file: File): Promise<ProcessedImage> {
@@ -47,6 +58,26 @@ export async function processImage(file: File): Promise<ProcessedImage> {
     maxDimension: NORMALIZATION_MAX_DIMENSION,
     quality: NORMALIZATION_JPEG_QUALITY,
   });
+}
+
+export async function fitImageForStorage(
+  file: File,
+  processedDataUrl: string,
+): Promise<StorageFitResult> {
+  if (processedDataUrl.length <= MAX_STORAGE_IMAGE_SIZE_BYTES) {
+    return { dataUrl: processedDataUrl, canStore: true };
+  }
+
+  const fallback = await transformImage(file, {
+    maxDimension: FIT_FALLBACK_MAX_DIMENSION,
+    quality: NORMALIZATION_JPEG_QUALITY,
+  });
+
+  if (fallback.dataUrl.length <= MAX_STORAGE_IMAGE_SIZE_BYTES) {
+    return { dataUrl: fallback.dataUrl, canStore: true };
+  }
+
+  return { dataUrl: processedDataUrl, canStore: false };
 }
 
 export function shouldNormalize(

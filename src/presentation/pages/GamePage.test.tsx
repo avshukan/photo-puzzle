@@ -11,7 +11,6 @@ vi.mock('../../app/compositionRoot', () => ({
     move: vi.fn(),
   },
 }));
-
 // --- helpers ---
 const mockGame = {
   puzzle: {
@@ -66,7 +65,7 @@ describe('GamePage', () => {
     gameService.startWithUpload = vi
       .fn()
       .mockRejectedValueOnce(new Error('error'))
-      .mockResolvedValueOnce(mockGame);
+      .mockResolvedValueOnce({ game: mockGame, persisted: true });
 
     render(<GamePage />);
 
@@ -88,6 +87,65 @@ describe('GamePage', () => {
 
     await waitFor(() => {
       expect(screen.queryByText('error')).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows warning when image cannot be persisted', async () => {
+    gameService.startWithUpload = vi
+      .fn()
+      .mockResolvedValue({ game: mockGame, persisted: false });
+
+    render(<GamePage />);
+
+    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
+
+    fireEvent.change(
+      document.querySelector('input[type="file"]') as HTMLInputElement,
+      { target: { files: [file] } },
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'Image is too large to save. It will not persist after reload.',
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('clears warning after next successful upload with persistence', async () => {
+    gameService.startWithUpload = vi
+      .fn()
+      .mockResolvedValueOnce({ game: mockGame, persisted: false })
+      .mockResolvedValueOnce({ game: mockGame, persisted: true });
+
+    render(<GamePage />);
+
+    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
+    const input = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+
+    // first → warning
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'Image is too large to save. It will not persist after reload.',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    // second → success, warning clears
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(
+          'Image is too large to save. It will not persist after reload.',
+        ),
+      ).not.toBeInTheDocument();
     });
   });
 });

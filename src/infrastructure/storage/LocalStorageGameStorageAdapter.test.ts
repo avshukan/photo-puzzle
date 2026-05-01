@@ -25,11 +25,12 @@ describe('LocalStorageGameStorageAdapter', () => {
       status: 'playing',
     };
 
-    adapter.save(game);
+    const result = adapter.save(game);
 
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
 
     expect(stored).toEqual(game);
+    expect(result).toBe(true);
   });
 
   it('loads game from localStorage', () => {
@@ -172,11 +173,30 @@ describe('LocalStorageGameStorageAdapter', () => {
       originalSetItem(key, value);
     });
 
-    adapter.save(game);
+    const result = adapter.save(game);
 
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
 
     expect(stored).toEqual(game);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when both save attempts fail', () => {
+    const { adapter } = createAdapter();
+
+    const game: Game = {
+      puzzle: { width: 4, height: 4, tiles: [1, 2, 3] as const },
+      imageUrl: 'url',
+      status: 'playing',
+    };
+
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+
+    const result = adapter.save(game);
+
+    expect(result).toBe(false);
   });
 
   it('clears storage', () => {

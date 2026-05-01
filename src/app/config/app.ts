@@ -23,7 +23,8 @@ export const APP_CONFIG = {
     NORMALIZATION_MAX_FILE_SIZE_BYTES: 1024 * 1024, // 1MB
     NORMALIZATION_JPEG_QUALITY: 0.75,
 
-    // Future: Iteration 2 - storage fit
+    // Storage fit
     MAX_STORAGE_IMAGE_SIZE_BYTES: 2 * 1024 * 1024, // 2MB (base64 target)
+    FIT_FALLBACK_MAX_DIMENSION: 800, // px (secondary attempt before skipping persistence)
   },
 };

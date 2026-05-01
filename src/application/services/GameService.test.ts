@@ -20,10 +20,11 @@ vi.mock('./imageValidation', () => ({
 
 vi.mock('./imageProcessing', () => ({
   processImage: vi.fn(),
+  fitImageForStorage: vi.fn(),
 }));
 
 import { validateImage } from './imageValidation';
-import { processImage } from './imageProcessing';
+import { processImage, fitImageForStorage } from './imageProcessing';
 
 describe('GameService', () => {
   let startGameExecute: Mock<StartGame['execute']>;
@@ -95,6 +96,7 @@ describe('GameService', () => {
   it('init() starts default game and saves it when storage is empty', () => {
     storageLoad.mockReturnValue(null);
     startGameExecute.mockReturnValue(game);
+    storageSave.mockReturnValue(true);
 
     const result = service.init();
 
@@ -104,7 +106,7 @@ describe('GameService', () => {
     expect(result).toBe(game);
   });
 
-  it('startWithUpload() validates, processes, starts game and saves it', async () => {
+  it('startWithUpload() validates, processes, fits image, starts game and saves it when canStore', async () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     const processedImage = {
       dataUrl: 'data:image/jpeg;base64,processed',
@@ -115,18 +117,100 @@ describe('GameService', () => {
 
     vi.mocked(validateImage).mockResolvedValue(undefined);
     vi.mocked(processImage).mockResolvedValue(processedImage);
+    vi.mocked(fitImageForStorage).mockResolvedValue({
+      dataUrl: processedImage.dataUrl,
+      canStore: true,
+    });
     startGameExecute.mockReturnValue(game);
+    storageSave.mockReturnValue(true);
 
     const result = await service.startWithUpload(file);
 
     expect(validateImage).toHaveBeenCalledWith(file);
     expect(processImage).toHaveBeenCalledWith(file);
+    expect(fitImageForStorage).toHaveBeenCalledWith(file, processedImage.dataUrl);
     expect(startGameExecute).toHaveBeenCalledWith({
       kind: 'upload',
       imageUrl: processedImage.dataUrl,
     });
     expect(storageSave).toHaveBeenCalledWith(game);
-    expect(result).toBe(game);
+    expect(storageClear).not.toHaveBeenCalled();
+    expect(result).toEqual({ game, persisted: true });
+  });
+
+  it('startWithUpload() returns persisted=false and clears storage when save fails despite canStore', async () => {
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+    const processedImage = {
+      dataUrl: 'data:image/jpeg;base64,processed',
+      width: 1024,
+      height: 768,
+      wasTransformed: true,
+    };
+
+    vi.mocked(validateImage).mockResolvedValue(undefined);
+    vi.mocked(processImage).mockResolvedValue(processedImage);
+    vi.mocked(fitImageForStorage).mockResolvedValue({
+      dataUrl: processedImage.dataUrl,
+      canStore: true,
+    });
+    startGameExecute.mockReturnValue(game);
+    storageSave.mockReturnValue(false);
+
+    const result = await service.startWithUpload(file);
+
+    expect(storageSave).toHaveBeenCalledWith(game);
+    expect(storageClear).toHaveBeenCalled();
+    expect(result).toEqual({ game, persisted: false });
+  });
+
+  it('startWithUpload() skips save, clears storage and returns persisted=false when canStore is false', async () => {
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+    const processedImage = {
+      dataUrl: 'data:image/jpeg;base64,large',
+      width: 1024,
+      height: 768,
+      wasTransformed: true,
+    };
+
+    vi.mocked(validateImage).mockResolvedValue(undefined);
+    vi.mocked(processImage).mockResolvedValue(processedImage);
+    vi.mocked(fitImageForStorage).mockResolvedValue({
+      dataUrl: processedImage.dataUrl,
+      canStore: false,
+    });
+    startGameExecute.mockReturnValue(game);
+
+    const result = await service.startWithUpload(file);
+
+    expect(storageSave).not.toHaveBeenCalled();
+    expect(storageClear).toHaveBeenCalled();
+    expect(result).toEqual({ game, persisted: false });
+  });
+
+  it('startWithUpload() uses fitted dataUrl from fitImageForStorage', async () => {
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+    const processedImage = {
+      dataUrl: 'data:image/jpeg;base64,large',
+      width: 1024,
+      height: 768,
+      wasTransformed: true,
+    };
+    const fittedDataUrl = 'data:image/jpeg;base64,fitted800';
+
+    vi.mocked(validateImage).mockResolvedValue(undefined);
+    vi.mocked(processImage).mockResolvedValue(processedImage);
+    vi.mocked(fitImageForStorage).mockResolvedValue({
+      dataUrl: fittedDataUrl,
+      canStore: true,
+    });
+    startGameExecute.mockReturnValue(game);
+
+    await service.startWithUpload(file);
+
+    expect(startGameExecute).toHaveBeenCalledWith({
+      kind: 'upload',
+      imageUrl: fittedDataUrl,
+    });
   });
 
   it('startWithUpload() rejects when input validation fails', async () => {
@@ -163,6 +247,7 @@ describe('GameService', () => {
     const nextGame: Game = { ...game, status: 'won' };
 
     moveTileExecute.mockReturnValue(nextGame);
+    storageSave.mockReturnValue(true);
 
     const result = service.move(game, 14);
 

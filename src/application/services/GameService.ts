@@ -3,7 +3,12 @@ import type { StartGame } from '../usecases/StartGame';
 import type { MoveTile } from '../usecases/MoveTile';
 import type { GameStoragePort } from '../ports/GameStoragePort';
 import { validateImage } from './imageValidation';
-import { processImage } from './imageProcessing';
+import { processImage, fitImageForStorage } from './imageProcessing';
+
+export type UploadResult = Readonly<{
+  game: Game;
+  persisted: boolean;
+}>;
 
 export class GameService {
   private readonly startGame: StartGame;
@@ -34,19 +39,31 @@ export class GameService {
     return game;
   }
 
-  async startWithUpload(file: File): Promise<Game> {
+  async startWithUpload(file: File): Promise<UploadResult> {
     await validateImage(file);
 
     const processedImage = await processImage(file);
 
+    const fit = await fitImageForStorage(file, processedImage.dataUrl);
+
     const game = this.startGame.execute({
       kind: 'upload',
-      imageUrl: processedImage.dataUrl,
+      imageUrl: fit.dataUrl,
     });
 
-    this.storage.save(game);
+    if (fit.canStore) {
+      const saved = this.storage.save(game);
 
-    return game;
+      if (!saved) {
+        this.storage.clear();
+      }
+
+      return { game, persisted: saved };
+    }
+
+    this.storage.clear();
+
+    return { game, persisted: false };
   }
 
   move(game: Game, fromIndex: number): Game {
