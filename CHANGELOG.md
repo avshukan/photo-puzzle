@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 Versioning follows SemVer.
 
+## [v0.3.0] - 2026-05-01
+
+### Added
+
+- Show error message on upload failure (task 31)
+- Handle storage overflow gracefully with fallback and user notification (task 32)
+- Use `browser-image-validator` for upload validation (task 37)
+
+### Improved
+
+- Compress and resize uploaded images before storing to fit localStorage (task 30)
+- Reject extremely large files (>10MB or >8000px) with clear error messages (task 19)
+- Added proper favicon (task 11)
+
 ## [v0.2.0] - 2026-03-27
 
 ### Added

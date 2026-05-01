@@ -59,7 +59,6 @@ Legend:
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
 |   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
-|  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 
 ---
 
@@ -106,6 +105,7 @@ Legend:
 |  23 | Restore image after reload                        | Value    | High     | Uploaded image survives reload       |
 |   8 | Persist puzzle state (tiles, status)              | Value    | High     | Save/restore state                   |
 |  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
+|  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 |   9 | Improve file upload UI                            | Value    | High     | Custom button, layout                |
 |  10 | Add preview original image                        | Value    | High     | Overlay preview                      |
 |   4 | Add close button to victory modal                 | Value    | High     | Allow continue viewing               |
