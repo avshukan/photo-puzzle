@@ -52,10 +52,18 @@ export class GameService {
     });
 
     if (fit.canStore) {
-      this.storage.save(game);
+      const saved = this.storage.save(game);
+
+      if (!saved) {
+        this.storage.clear();
+      }
+
+      return { game, persisted: saved };
     }
 
-    return { game, persisted: fit.canStore };
+    this.storage.clear();
+
+    return { game, persisted: false };
   }
 
   move(game: Game, fromIndex: number): Game {

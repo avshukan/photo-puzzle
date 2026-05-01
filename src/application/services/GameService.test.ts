@@ -96,6 +96,7 @@ describe('GameService', () => {
   it('init() starts default game and saves it when storage is empty', () => {
     storageLoad.mockReturnValue(null);
     startGameExecute.mockReturnValue(game);
+    storageSave.mockReturnValue(true);
 
     const result = service.init();
 
@@ -121,6 +122,7 @@ describe('GameService', () => {
       canStore: true,
     });
     startGameExecute.mockReturnValue(game);
+    storageSave.mockReturnValue(true);
 
     const result = await service.startWithUpload(file);
 
@@ -132,10 +134,36 @@ describe('GameService', () => {
       imageUrl: processedImage.dataUrl,
     });
     expect(storageSave).toHaveBeenCalledWith(game);
+    expect(storageClear).not.toHaveBeenCalled();
     expect(result).toEqual({ game, persisted: true });
   });
 
-  it('startWithUpload() skips save and returns persisted=false when canStore is false', async () => {
+  it('startWithUpload() returns persisted=false and clears storage when save fails despite canStore', async () => {
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+    const processedImage = {
+      dataUrl: 'data:image/jpeg;base64,processed',
+      width: 1024,
+      height: 768,
+      wasTransformed: true,
+    };
+
+    vi.mocked(validateImage).mockResolvedValue(undefined);
+    vi.mocked(processImage).mockResolvedValue(processedImage);
+    vi.mocked(fitImageForStorage).mockResolvedValue({
+      dataUrl: processedImage.dataUrl,
+      canStore: true,
+    });
+    startGameExecute.mockReturnValue(game);
+    storageSave.mockReturnValue(false);
+
+    const result = await service.startWithUpload(file);
+
+    expect(storageSave).toHaveBeenCalledWith(game);
+    expect(storageClear).toHaveBeenCalled();
+    expect(result).toEqual({ game, persisted: false });
+  });
+
+  it('startWithUpload() skips save, clears storage and returns persisted=false when canStore is false', async () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     const processedImage = {
       dataUrl: 'data:image/jpeg;base64,large',
@@ -155,6 +183,7 @@ describe('GameService', () => {
     const result = await service.startWithUpload(file);
 
     expect(storageSave).not.toHaveBeenCalled();
+    expect(storageClear).toHaveBeenCalled();
     expect(result).toEqual({ game, persisted: false });
   });
 
@@ -218,6 +247,7 @@ describe('GameService', () => {
     const nextGame: Game = { ...game, status: 'won' };
 
     moveTileExecute.mockReturnValue(nextGame);
+    storageSave.mockReturnValue(true);
 
     const result = service.move(game, 14);
 

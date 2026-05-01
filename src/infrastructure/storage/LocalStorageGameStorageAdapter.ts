@@ -4,7 +4,7 @@ import type { Game } from '../../application/models/Game';
 const STORAGE_KEY = 'photo-puzzle.game';
 
 export class LocalStorageGameStorageAdapter implements GameStoragePort {
-  save(game: Game): void {
+  save(game: Game): boolean {
     try {
       const persisted = {
         puzzle: game.puzzle,
@@ -15,6 +15,8 @@ export class LocalStorageGameStorageAdapter implements GameStoragePort {
       const serialized = JSON.stringify(persisted);
 
       localStorage.setItem(STORAGE_KEY, serialized);
+
+      return true;
     } catch {
       // fallback: очищаем storage и пробуем сохранить заново
       try {
@@ -27,8 +29,10 @@ export class LocalStorageGameStorageAdapter implements GameStoragePort {
         };
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback));
+
+        return true;
       } catch {
-        // окончательно игнорируем (лучше, чем падение)
+        return false;
       }
     }
   }
