@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GamePage } from './GamePage';
 import { gameService } from '../../app/compositionRoot';
@@ -20,6 +26,11 @@ const mockGame = {
   },
   imageUrl: 'data:image/jpeg;base64,test',
   status: 'playing',
+};
+
+const mockWonGame = {
+  ...mockGame,
+  status: 'won',
 };
 
 // --- tests ---
@@ -58,6 +69,29 @@ describe('GamePage', () => {
 
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+
+  it('shows upload error inside victory modal when modal upload fails', async () => {
+    const errorMessage = 'File is too large';
+
+    gameService.init = vi.fn().mockReturnValue(mockWonGame);
+    gameService.startWithUpload = vi
+      .fn()
+      .mockRejectedValue(new Error(errorMessage));
+
+    render(<GamePage />);
+
+    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
+    const dialog = screen.getByRole('dialog', { name: /victory/i });
+    const modalInput = within(dialog).getByLabelText(
+      /upload image input/i,
+    ) as HTMLInputElement;
+
+    fireEvent.change(modalInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(within(dialog).getByText(errorMessage)).toBeInTheDocument();
     });
   });
 
