@@ -6,6 +6,32 @@ import { PreviewOverlay } from '../components/PreviewOverlay';
 import { UploadButton } from '../components/UploadButton';
 import { APP_CONFIG } from '../../app/config/app';
 
+type FeedbackMessageProps = {
+  kind: 'error' | 'warning';
+  children: string;
+};
+
+function FeedbackMessage({ kind, children }: FeedbackMessageProps) {
+  const isError = kind === 'error';
+
+  return (
+    <div
+      role="alert"
+      style={{
+        marginTop: 12,
+        padding: '8px 12px',
+        borderRadius: 8,
+        background: isError ? '#ffeaea' : '#fff8e1',
+        border: isError ? '1px solid #ffbdbd' : '1px solid #ffe082',
+        color: isError ? '#b00020' : '#7a5800',
+        fontSize: 14,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function GamePage() {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -66,6 +92,8 @@ export function GamePage() {
 
   if (!game) return null;
 
+  const isVictoryModalVisible = game.status === 'won' && isModalOpen;
+
   return (
     <div
       style={{
@@ -106,39 +134,13 @@ export function GamePage() {
       </div>
 
       {/* Error message */}
-      {error && (
-        <div
-          role="alert"
-          style={{
-            marginTop: 12,
-            padding: '8px 12px',
-            borderRadius: 8,
-            background: '#ffeaea',
-            border: '1px solid #ffbdbd',
-            color: '#b00020',
-            fontSize: 14,
-          }}
-        >
-          {error}
-        </div>
+      {error && !isVictoryModalVisible && (
+        <FeedbackMessage kind="error">{error}</FeedbackMessage>
       )}
 
       {/* Warning message */}
-      {warning && (
-        <div
-          role="alert"
-          style={{
-            marginTop: 12,
-            padding: '8px 12px',
-            borderRadius: 8,
-            background: '#fff8e1',
-            border: '1px solid #ffe082',
-            color: '#7a5800',
-            fontSize: 14,
-          }}
-        >
-          {warning}
-        </div>
+      {warning && !isVictoryModalVisible && (
+        <FeedbackMessage kind="warning">{warning}</FeedbackMessage>
       )}
 
       <div style={{ height: 12 }} />
@@ -169,7 +171,7 @@ export function GamePage() {
       )}
 
       {/* Victory modal */}
-      {game.status === 'won' && isModalOpen && (
+      {isVictoryModalVisible && (
         <div
           role="dialog"
           aria-modal="true"
@@ -202,6 +204,12 @@ export function GamePage() {
             <div style={{ fontSize: 14, opacity: 0.8 }}>
               You can close this window or upload a new image.
             </div>
+
+            {error && <FeedbackMessage kind="error">{error}</FeedbackMessage>}
+
+            {warning && (
+              <FeedbackMessage kind="warning">{warning}</FeedbackMessage>
+            )}
 
             <div style={{ height: 12 }} />
 
