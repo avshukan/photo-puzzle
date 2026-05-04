@@ -59,12 +59,9 @@ describe('GamePage', () => {
 
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
 
-    // UploadButton likely wraps input → trigger via click simulation
     fireEvent.change(
-      document.querySelector('input[type="file"]') as HTMLInputElement,
-      {
-        target: { files: [file] },
-      },
+      screen.getByLabelText(/upload image input/i) as HTMLInputElement,
+      { target: { files: [file] } },
     );
 
     await waitFor(() => {
@@ -105,8 +102,8 @@ describe('GamePage', () => {
 
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
 
-    const input = document.querySelector(
-      'input[type="file"]',
+    const input = screen.getByLabelText(
+      /upload image input/i,
     ) as HTMLInputElement;
 
     // first → error
@@ -134,7 +131,7 @@ describe('GamePage', () => {
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
 
     fireEvent.change(
-      document.querySelector('input[type="file"]') as HTMLInputElement,
+      screen.getByLabelText(/upload image input/i) as HTMLInputElement,
       { target: { files: [file] } },
     );
 
@@ -156,8 +153,8 @@ describe('GamePage', () => {
     render(<GamePage />);
 
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
-    const input = document.querySelector(
-      'input[type="file"]',
+    const input = screen.getByLabelText(
+      /upload image input/i,
     ) as HTMLInputElement;
 
     // first → warning
