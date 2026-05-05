@@ -90,6 +90,13 @@ export function GamePage() {
     setGame((prev) => (prev ? gameService.move(prev, fromIndex) : prev));
   };
 
+  const handleShuffle = useCallback(() => {
+    setGame((prev) => (prev ? gameService.shuffle(prev) : prev));
+    setIsModalOpen(false);
+    setError(null);
+    setWarning(null);
+  }, []);
+
   if (!game) return null;
 
   const isVictoryModalVisible = game.status === 'won' && isModalOpen;
@@ -114,6 +121,21 @@ export function GamePage() {
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
 
         <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            type="button"
+            onClick={handleShuffle}
+            style={{
+              border: '1px solid #ddd',
+              borderRadius: 8,
+              padding: '6px 10px',
+              cursor: 'pointer',
+              fontSize: 14,
+              background: 'transparent',
+            }}
+          >
+            Shuffle
+          </button>
+
           <button
             type="button"
             onClick={() => setIsPreviewOpen(true)}
@@ -219,6 +241,19 @@ export function GamePage() {
                 label="Upload new"
                 disabled={isUploading}
               />
+
+              <button
+                type="button"
+                onClick={handleShuffle}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: '1px solid #ddd',
+                  cursor: 'pointer',
+                }}
+              >
+                Shuffle
+              </button>
 
               <button
                 autoFocus
