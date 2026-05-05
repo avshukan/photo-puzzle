@@ -182,7 +182,13 @@ describe('GamePage', () => {
   });
 
   it('Shuffle button is visible and calls gameService.shuffle with current game', () => {
-    const shuffledGame = { ...mockGame, puzzle: { ...mockGame.puzzle, tiles: Array.from({ length: 16 }, (_, i) => (i + 1) % 16) } };
+    const shuffledGame = {
+      ...mockGame,
+      puzzle: {
+        ...mockGame.puzzle,
+        tiles: Array.from({ length: 16 }, (_, i) => (i + 1) % 16),
+      },
+    };
 
     gameService.shuffle = vi.fn().mockReturnValue(shuffledGame);
 
@@ -207,10 +213,14 @@ describe('GamePage', () => {
     const dialog = screen.getByRole('dialog', { name: /victory/i });
     expect(dialog).toBeInTheDocument();
 
-    const shuffleInModal = within(dialog).getByRole('button', { name: /shuffle/i });
+    const shuffleInModal = within(dialog).getByRole('button', {
+      name: /shuffle/i,
+    });
     fireEvent.click(shuffleInModal);
 
     expect(gameService.shuffle).toHaveBeenCalledWith(mockWonGame);
-    expect(screen.queryByRole('dialog', { name: /victory/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: /victory/i }),
+    ).not.toBeInTheDocument();
   });
 });
