@@ -1,17 +1,22 @@
-import { useRef } from 'react';
+import { type CSSProperties, useRef } from 'react';
 
 type Props = {
   onUpload: (file: File) => void;
   label?: string;
   disabled?: boolean;
+  variant?: 'primary' | 'secondary';
+  style?: CSSProperties;
 };
 
 export function UploadButton({
   onUpload,
   label = 'Upload image',
   disabled = false,
+  variant = 'secondary',
+  style,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const isPrimary = variant === 'primary';
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
@@ -30,13 +35,16 @@ export function UploadButton({
         onClick={() => inputRef.current?.click()}
         disabled={disabled}
         style={{
-          border: '1px solid #ddd',
+          border: isPrimary ? '1px solid #cfcfcf' : '1px solid #ddd',
           borderRadius: 8,
-          padding: '6px 10px',
+          padding: '6px 12px',
           cursor: disabled ? 'not-allowed' : 'pointer',
           fontSize: 14,
-          background: 'transparent',
+          fontWeight: isPrimary ? 600 : 400,
+          background: isPrimary ? '#f5f5f5' : 'transparent',
+          color: 'inherit',
           opacity: disabled ? 0.5 : 1,
+          ...style,
         }}
       >
         {label}
