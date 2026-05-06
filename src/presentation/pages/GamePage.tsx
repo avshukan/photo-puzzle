@@ -90,9 +90,19 @@ export function GamePage() {
     setGame((prev) => (prev ? gameService.move(prev, fromIndex) : prev));
   };
 
+  const handleShuffle = useCallback(() => {
+    setGame((prev) => (prev ? gameService.shuffle(prev) : prev));
+    setIsModalOpen(false);
+    setError(null);
+    setWarning(null);
+  }, []);
+
   if (!game) return null;
 
   const isVictoryModalVisible = game.status === 'won' && isModalOpen;
+  const boardContentMaxWidth =
+    game.puzzle.width * APP_CONFIG.TILE.MAX_SIZE +
+    (game.puzzle.width - 1) * APP_CONFIG.BOARD.GAP_PX;
 
   return (
     <div
@@ -106,14 +116,31 @@ export function GamePage() {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
-          gap: 12,
-          alignItems: 'center',
+          flexDirection: 'column',
+          gap: 10,
+          alignItems: 'stretch',
+          flexWrap: 'wrap',
+          marginBottom: 12,
+          maxWidth: boardContentMaxWidth,
+          marginLeft: 'auto',
+          marginRight: 'auto',
         }}
       >
         <h1 style={{ margin: 0, fontSize: 20 }}>Photo Puzzle</h1>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            flexWrap: 'wrap',
+          }}
+        >
+          <UploadButton
+            onUpload={handleUpload}
+            disabled={isUploading}
+            variant="primary"
+          />
+
           <button
             type="button"
             onClick={() => setIsPreviewOpen(true)}
@@ -129,7 +156,20 @@ export function GamePage() {
             Preview
           </button>
 
-          <UploadButton onUpload={handleUpload} disabled={isUploading} />
+          <button
+            type="button"
+            onClick={handleShuffle}
+            style={{
+              border: '1px solid #ddd',
+              borderRadius: 8,
+              padding: '6px 10px',
+              cursor: 'pointer',
+              fontSize: 14,
+              background: 'transparent',
+            }}
+          >
+            Shuffle
+          </button>
         </div>
       </div>
 
@@ -219,6 +259,19 @@ export function GamePage() {
                 label="Upload new"
                 disabled={isUploading}
               />
+
+              <button
+                type="button"
+                onClick={handleShuffle}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: '1px solid #ddd',
+                  cursor: 'pointer',
+                }}
+              >
+                Shuffle
+              </button>
 
               <button
                 autoFocus

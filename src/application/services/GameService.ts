@@ -74,6 +74,17 @@ export class GameService {
     return next;
   }
 
+  shuffle(game: Game): Game {
+    const next = this.startGame.execute({
+      kind: 'upload',
+      imageUrl: game.imageUrl,
+    });
+
+    this.storage.save(next);
+
+    return next;
+  }
+
   reset(): void {
     this.storage.clear();
   }

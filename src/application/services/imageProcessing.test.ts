@@ -442,7 +442,10 @@ describe('imageProcessing', () => {
           (1500 / 2000) * FIT_FALLBACK_MAX_DIMENSION,
         );
 
-        expect(toDataURL).toHaveBeenCalledWith('image/jpeg', expect.any(Number));
+        expect(toDataURL).toHaveBeenCalledWith(
+          'image/jpeg',
+          expect.any(Number),
+        );
         expect(expectedWidth).toBe(FIT_FALLBACK_MAX_DIMENSION);
         expect(expectedHeight).toBe(600);
       } finally {

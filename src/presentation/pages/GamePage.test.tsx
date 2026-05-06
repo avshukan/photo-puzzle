@@ -15,6 +15,7 @@ vi.mock('../../app/compositionRoot', () => ({
     init: vi.fn(),
     startWithUpload: vi.fn(),
     move: vi.fn(),
+    shuffle: vi.fn(),
   },
 }));
 // --- helpers ---
@@ -178,5 +179,48 @@ describe('GamePage', () => {
         ),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('Shuffle button is visible and calls gameService.shuffle with current game', () => {
+    const shuffledGame = {
+      ...mockGame,
+      puzzle: {
+        ...mockGame.puzzle,
+        tiles: Array.from({ length: 16 }, (_, i) => (i + 1) % 16),
+      },
+    };
+
+    gameService.shuffle = vi.fn().mockReturnValue(shuffledGame);
+
+    render(<GamePage />);
+
+    const shuffleButton = screen.getByRole('button', { name: /shuffle/i });
+    expect(shuffleButton).toBeInTheDocument();
+
+    fireEvent.click(shuffleButton);
+
+    expect(gameService.shuffle).toHaveBeenCalledWith(mockGame);
+  });
+
+  it('Shuffle button in victory modal closes the modal and reshuffles', () => {
+    gameService.init = vi.fn().mockReturnValue(mockWonGame);
+
+    const reshuffledGame = { ...mockGame, status: 'playing' };
+    gameService.shuffle = vi.fn().mockReturnValue(reshuffledGame);
+
+    render(<GamePage />);
+
+    const dialog = screen.getByRole('dialog', { name: /victory/i });
+    expect(dialog).toBeInTheDocument();
+
+    const shuffleInModal = within(dialog).getByRole('button', {
+      name: /shuffle/i,
+    });
+    fireEvent.click(shuffleInModal);
+
+    expect(gameService.shuffle).toHaveBeenCalledWith(mockWonGame);
+    expect(
+      screen.queryByRole('dialog', { name: /victory/i }),
+    ).not.toBeInTheDocument();
   });
 });

@@ -128,7 +128,10 @@ describe('GameService', () => {
 
     expect(validateImage).toHaveBeenCalledWith(file);
     expect(processImage).toHaveBeenCalledWith(file);
-    expect(fitImageForStorage).toHaveBeenCalledWith(file, processedImage.dataUrl);
+    expect(fitImageForStorage).toHaveBeenCalledWith(
+      file,
+      processedImage.dataUrl,
+    );
     expect(startGameExecute).toHaveBeenCalledWith({
       kind: 'upload',
       imageUrl: processedImage.dataUrl,
@@ -254,6 +257,29 @@ describe('GameService', () => {
     expect(moveTileExecute).toHaveBeenCalledWith(game, 14);
     expect(storageSave).toHaveBeenCalledWith(nextGame);
     expect(result).toBe(nextGame);
+  });
+
+  it('shuffle() starts a new game with the same imageUrl and saves it', () => {
+    const shuffledGame: Game = {
+      ...game,
+      puzzle: {
+        ...game.puzzle,
+        tiles: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      },
+      status: 'playing',
+    };
+
+    startGameExecute.mockReturnValue(shuffledGame);
+    storageSave.mockReturnValue(true);
+
+    const result = service.shuffle(game);
+
+    expect(startGameExecute).toHaveBeenCalledWith({
+      kind: 'upload',
+      imageUrl: game.imageUrl,
+    });
+    expect(storageSave).toHaveBeenCalledWith(shuffledGame);
+    expect(result).toBe(shuffledGame);
   });
 
   it('reset() clears storage', () => {
