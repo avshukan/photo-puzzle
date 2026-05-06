@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 Versioning follows SemVer.
 
+## [v0.3.0] - 2026-05-06
+
+### Added
+
+- Shuffle button (restart puzzle with same image)
+- Proper favicon
+
+### Improved
+
+- Upload validation uses `browser-image-validator`
+- Images are compressed and resized before storing (max 1024px, JPEG 0.75)
+- Storage overflow handled gracefully (in-memory fallback with user notification)
+
+### Fixed
+
+- Files exceeding 10MB or 8000px are rejected with a clear error message
+- Error and warning messages are shown to the user on upload failure or storage overflow
+
 ## [v0.2.0] - 2026-03-27
 
 ### Added

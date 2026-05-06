@@ -6,13 +6,16 @@
 
 https://puzzle-photo.avshukan.com/
 
-## Features (v0.2.0)
+## Features (v0.3.0)
 
 - 4×4 puzzle (15 tiles + 1 empty)
 - Click adjacent tile to move
 - Always solvable shuffle
+- Shuffle button (restart with same image)
 - Default image on first load
 - Upload local image to start a new game
+- Upload validation (max 10MB, 8000px)
+- Images compressed and resized before storing
 - Game state persists after reload
 - Uploaded image is restored
 - Preview original image

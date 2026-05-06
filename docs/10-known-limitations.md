@@ -7,7 +7,7 @@ This document describes current technical and UX limitations of the project.
 - Game state is stored in `localStorage`
 - Maximum available size is ~5MB (browser-dependent)
 - Images are stored as data URLs (base64), which increases size by ~30–40%
-- If storage fails (quota exceeded), previous state may be cleared and replaced with a new one
+- If storage fails (quota exceeded), the image is used in-memory only for the current session (no persistence)
 
 ---
 
@@ -22,9 +22,9 @@ This document describes current technical and UX limitations of the project.
 
 ## Images
 
-- Images are stored as base64 (data URL)
-- No compression or resizing is applied
-- Large images close to the 2MB limit may still significantly impact storage size
+- Images are compressed and resized before storing (max 1024px, JPEG 0.75)
+- Images are stored as base64 (data URL), which increases size by ~30–40%
+- Images that remain above 2MB after compression are not persisted (in-memory only)
 
 ---
 
@@ -62,7 +62,6 @@ This document describes current technical and UX limitations of the project.
 
 Potential areas for improvement:
 
-- Image compression / resizing before storing
 - Better accessibility (focus trap, keyboard navigation)
 - Support for different board sizes
 - Improved persistence strategy
