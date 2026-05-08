@@ -47,7 +47,7 @@ This document describes current technical and UX limitations of the project.
 ## Performance
 
 - Very large images (near 2MB) may affect performance
-- No image optimization or lazy processing
+- No lazy or background image processing
 
 ---
 

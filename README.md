@@ -6,7 +6,7 @@
 
 https://puzzle-photo.avshukan.com/
 
-## Features (v0.3.0)
+## Features (current + next release)
 
 - 4×4 puzzle (15 tiles + 1 empty)
 - Click adjacent tile to move

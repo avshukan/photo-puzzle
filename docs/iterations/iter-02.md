@@ -164,5 +164,5 @@ All planned items were completed and merged to `main`.
 
 ## Release
 
-- Version: v0.3.0
-- Status: Deployed
+- Target version: v0.3.0
+- Status: Ready for version bump and deployment
