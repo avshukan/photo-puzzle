@@ -86,9 +86,19 @@ Legend:
 |  28 | Add unit tests for BrowserImageUrlAdapter         | Quality  | Medium   | FileReader logic untested            |
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
 |  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
-|  34 | Add random images source                          | Value    | Low      | Optional mode                        |
+|  34 | Add random preset image action                    | Value    | Medium   | Pick from bundled presets            |
 |  35 | Avoid redundant image loads in upload pipeline    | Refactor | Low      | Reuse loaded image                   |
 |  36 | Dead `readAsDataUrl` in `BrowserImageUrlAdapter`  | Refactor | Low      | Remove `readAsDataUrl`               |
+|  38 | Add PWA manifest                                  | Value    | Medium   | App name, icons, theme color         |
+|  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
+|  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
+|  41 | Add preset image gallery                          | Value    | High     | Choose a bundled image               |
+|  42 | Add bundled preset images                         | Value    | High     | Include title/difficulty metadata    |
+|  43 | Track image source type                           | Value    | Medium   | Default, preset, or uploaded image   |
+|  44 | Add image picker UI                               | Value    | High     | Presets and upload in one flow       |
+|  45 | Add difficulty labels for preset images           | Value    | Low      | Easy / medium / hard                 |
+|  46 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
+|  47 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
 
 ---
 
