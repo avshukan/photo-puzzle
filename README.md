@@ -15,7 +15,7 @@ https://puzzle-photo.avshukan.com/
 - Default image on first load
 - Upload local image to start a new game
 - Upload validation (max 10MB, 8000px)
-- Large images are compressed and resized before storing
+- Large images are compressed and resized before storing; small images are stored as-is
 - Game state persists after reload
 - Uploaded image is restored
 - Preview original image
