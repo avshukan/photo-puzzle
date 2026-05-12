@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 Versioning follows SemVer.
 
-## [Unreleased]
+## [v0.3.0] - 2026-05-12
 
 ### Added
 
