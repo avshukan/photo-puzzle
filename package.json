@@ -12,6 +12,7 @@
     "format:check": "prettier --check .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:cover": "vitest run --coverage"
   },
   "dependencies": {

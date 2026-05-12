@@ -15,7 +15,8 @@ Versioning follows SemVer.
 ### Improved
 
 - Upload validation uses `browser-image-validator`
-- Images are compressed and resized before storing (max 1024px, JPEG 0.75)
+- Large images are compressed and resized before storing (max 1024px, JPEG 0.75);
+  small images are stored as-is
 - Storage overflow handled gracefully (in-memory fallback with user notification)
 
 ### Fixed
