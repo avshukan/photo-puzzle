@@ -92,13 +92,11 @@ Legend:
 |  38 | Add PWA manifest                                  | Value    | Medium   | App name, icons, theme color         |
 |  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
 |  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
-|  41 | Add preset image gallery                          | Value    | High     | Choose a bundled image               |
-|  42 | Add bundled preset images                         | Value    | High     | Include title/difficulty metadata    |
-|  43 | Track image source type                           | Value    | Medium   | Default, preset, or uploaded image   |
-|  44 | Add image picker UI                               | Value    | High     | Presets and upload in one flow       |
-|  45 | Add difficulty labels for preset images           | Value    | Low      | Easy / medium / hard                 |
-|  46 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
-|  47 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
+|  41 | Add image picker with bundled presets             | Value    | High     | Gallery of preset images + upload    |
+|  42 | Track image source type                           | Value    | Medium   | Default, preset, or uploaded image   |
+|  43 | Add difficulty labels for preset images           | Value    | Low      | Easy / medium / hard                 |
+|  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
+|  45 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
 
 ---
 
