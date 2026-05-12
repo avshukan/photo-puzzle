@@ -28,13 +28,15 @@ If exceeded:
 
 ---
 
-### 2. Processing (normalize)
+### 2. Processing (normalize when needed)
 
-Applied to all accepted images:
+Applied to accepted images that exceed the small-image threshold:
 
 - Resize: **max 1024px** (longest side)
 - Format: **JPEG**
 - Quality: **0.75**
+
+Images already within **1MB** and **1024px** on both sides are stored as-is.
 
 Goal:
 
@@ -50,7 +52,7 @@ Goal:
 
 Algorithm:
 
-1. Process image (1024px)
+1. Process image (as-is for small images, otherwise 1024px JPEG)
 2. If size > 2MB → resize to **800px** → retry
 3. If still > 2MB → do not store
 

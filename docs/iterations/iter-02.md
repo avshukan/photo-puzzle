@@ -23,7 +23,7 @@ Adopt image handling model:
 
 ```text
 1. Reject: >10MB or >8000px
-2. Normalize: 1024px + jpeg 0.75
+2. Normalize when needed: 1024px + JPEG 0.75
 3. Fit: ≤2MB (else 800px → retry)
 4. Fallback: play without persistence
 ```
@@ -80,13 +80,15 @@ If exceeded:
 
 ---
 
-### 2. Processing (Normalize)
+### 2. Processing (Normalize when needed)
 
-For all accepted images:
+For accepted images that exceed the small-image threshold:
 
 - Resize to **max 1024px**
 - Format: **JPEG**
 - Quality: **0.75**
+
+Images already within **1MB** and **1024px** on both sides are stored as-is.
 
 ---
 
@@ -98,7 +100,7 @@ Target:
 
 Algorithm:
 
-1. Process image (1024px)
+1. Process image (as-is for small images, otherwise 1024px JPEG)
 2. If >2MB → resize to **800px**
 3. If still >2MB → skip persistence
 
@@ -156,7 +158,7 @@ All planned items were completed and merged to `main`.
 
 - Upload validation uses `browser-image-validator`
 - Files exceeding 10MB or 8000px are rejected with a clear error message
-- Images are compressed and resized (max 1024px, JPEG 0.75) before storing
+- Large images are compressed and resized (max 1024px, JPEG 0.75) before storing; small images are stored as-is
 - Storage overflow is handled gracefully with in-memory fallback and user notification
 - Error and warning messages are visible to the user
 - Proper favicon added

@@ -22,7 +22,8 @@ This document describes current technical and UX limitations of the project.
 
 ## Images
 
-- Images are compressed and resized before storing (max 1024px, JPEG 0.75)
+- Large images are compressed and resized before storing (max 1024px, JPEG 0.75);
+  images already within 1MB and 1024px on both sides are stored as-is
 - Images are stored as base64 (data URL), which increases size by ~30–40%
 - Images that remain above 2MB after compression are not persisted (in-memory only)
 
