@@ -147,3 +147,22 @@ User sees:
 - Fallback behavior works (no persistence)
 - Errors are visible to the user
 - Shuffle button works correctly
+
+---
+
+## Result
+
+All planned items were completed and merged to `main`.
+
+- Upload validation uses `browser-image-validator`
+- Files exceeding 10MB or 8000px are rejected with a clear error message
+- Images are compressed and resized (max 1024px, JPEG 0.75) before storing
+- Storage overflow is handled gracefully with in-memory fallback and user notification
+- Error and warning messages are visible to the user
+- Proper favicon added
+- Shuffle button added (restarts puzzle with same image)
+
+## Release
+
+- Target version: v0.3.0
+- Status: Ready for version bump and deployment

@@ -58,7 +58,6 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
-|   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
 
 ---
 
@@ -98,6 +97,7 @@ Legend:
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
+|   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
 |  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 |  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
 |  37 | Use `browser-image-validator` for upload checks   | Refactor | High     | Replace custom validation service    |
