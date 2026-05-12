@@ -93,7 +93,7 @@ Legend:
 |  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
 |  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
 |  41 | Add image picker with bundled presets             | Value    | High     | Gallery of preset images + upload    |
-|  42 | Track image source type                           | Value    | Medium   | Default, preset, or uploaded image   |
+|  42 | Track image source type                           | Value    | Low      | Default, preset, or uploaded image   |
 |  43 | Add difficulty labels for preset images           | Value    | Low      | Easy / medium / hard                 |
 |  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
 |  45 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
