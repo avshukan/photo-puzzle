@@ -40,24 +40,32 @@ Legend:
    - Low = later / ideas
 
 3. Before iteration:
-   - pick 3–5 High/Medium items
+   - pick a focused scope from High/Medium items
    - prefer small tasks
 
 4. During iteration:
-   - move tasks from Todo → Doing
+   - keep the current iteration scope in Current Iteration
    - avoid adding new tasks
 
 5. After completion:
-   - move tasks to Done
+   - move all completed scope items from Current Iteration to Done
    - update CHANGELOG if needed
 
 ---
 
-## Doing
+## Current Iteration
 
 |  ID | Title                                             | Type     | Priority | Notes                                |
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
+|  41 | Add image picker with bundled presets             | Value    | High     | Gallery of preset images + upload    |
+|  38 | Add PWA manifest                                  | Value    | Medium   | App name, icons, theme color         |
+|  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
+|  45 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
+|  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
+|  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
+|  42 | Track image source type                           | Value    | Low      | Default, preset, or uploaded image   |
+|  34 | Add random preset image action                    | Value    | Medium   | Pick from bundled presets            |
 
 ---
 
@@ -86,17 +94,12 @@ Legend:
 |  28 | Add unit tests for BrowserImageUrlAdapter         | Quality  | Medium   | FileReader logic untested            |
 |  29 | Add focus trap in modals                          | Quality  | Low      | Accessibility improvement            |
 |  33 | Add option to show tile numbers                   | Value    | Medium   | Easier for kids                      |
-|  34 | Add random preset image action                    | Value    | Medium   | Pick from bundled presets            |
 |  35 | Avoid redundant image loads in upload pipeline    | Refactor | Low      | Reuse loaded image                   |
 |  36 | Dead `readAsDataUrl` in `BrowserImageUrlAdapter`  | Refactor | Low      | Remove `readAsDataUrl`               |
-|  38 | Add PWA manifest                                  | Value    | Medium   | App name, icons, theme color         |
-|  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
-|  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
-|  41 | Add image picker with bundled presets             | Value    | High     | Gallery of preset images + upload    |
-|  42 | Track image source type                           | Value    | Low      | Default, preset, or uploaded image   |
 |  43 | Add difficulty labels for preset images           | Value    | Low      | Easy / medium / hard                 |
-|  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
-|  45 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
+|  46 | Add Umami pageview analytics                      | Value    | Medium   | Track visits via configurable ID     |
+|  47 | Add Umami gameplay events                         | Value    | Medium   | Track key game and PWA events        |
+|  48 | Document analytics configuration                  | Quality  | Low      | Env vars, dev behavior, privacy      |
 
 ---
 
