@@ -10,17 +10,36 @@ even when the user does not have a suitable image to upload.
 All listed items are part of the iteration scope. The iteration priority helps
 sequence work and manage risk; it does not mark items as optional.
 
-|  ID | Title                                             | Type     | Priority | Notes                                |
-| --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
-| === | ================================================= | ======== | ======== | ==================================== |
-|  41 | Add image picker with bundled presets             | Value    | High     | Gallery of preset images + upload    |
-|  38 | Add PWA manifest                                  | Value    | Medium   | App name, icons, theme color         |
-|  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
-|  45 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
-|  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
-|  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
-|  42 | Track image source type                           | Value    | Low      | Default, preset, or uploaded image   |
-|  34 | Add random preset image action                    | Value    | Medium   | Pick from bundled presets            |
+|  ID | Title                                       | Type    | Priority | Notes                               |
+| --: | ------------------------------------------- | ------- | -------- | ----------------------------------- |
+|  41 | Add image picker with bundled presets       | Value   | High     | Gallery of preset images + upload   |
+|  38 | Add PWA manifest                            | Value   | Medium   | App name, icons, theme color        |
+|  44 | Improve controls layout for growing actions | Quality | Medium   | Keep top controls clear             |
+|  45 | Add first-run image selection state         | Value   | Medium   | Offer preset or upload on first run |
+|  39 | Add service worker for offline app shell    | Value   | Medium   | Open app offline after first load   |
+|  40 | Add PWA installability checks               | Quality | Low      | Lighthouse or manual checklist      |
+|  42 | Track image source type                     | Value   | Low      | Default, preset, or uploaded image  |
+|  34 | Add random preset image action              | Value   | Medium   | Pick from bundled presets           |
+
+## Preparation Analysis
+
+### Scope readiness
+
+- Iteration scope is fully mapped from backlog IDs 34, 38, 39, 40, 41, 42, 44, 45
+- Scope is focused on two coherent tracks: preset onboarding and PWA app shell
+- Out-of-scope items are fixed explicitly to avoid hidden expansion during delivery
+
+### Delivery readiness
+
+- Implementation order starts with PWA foundation (manifest, service worker, checks)
+- UI-first-run flow tasks are scheduled after infrastructure to reduce integration risk
+- Definition of Done covers behavior, compatibility with saved games, and test coverage
+
+### Risk readiness
+
+- Main risks are identified early: caching behavior, component growth, asset size
+- Saved game compatibility and unified image source model are tracked as key safeguards
+- Scope can be sliced by vertical increments if iteration capacity changes
 
 ## Out of Scope
 
