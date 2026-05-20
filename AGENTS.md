@@ -41,8 +41,8 @@ Read the relevant docs before changing behavior:
 - `docs/05-domain-model.md` - puzzle state and invariants
 - `docs/06-usecases.md` - application-level flows
 - `docs/07-process.md` - iteration/release process
+- `docs/08-known-limitations.md` - current tradeoffs and constraints
 - `docs/09-architecture.md` - Clean Architecture boundaries
-- `docs/10-known-limitations.md` - current tradeoffs and constraints
 
 Keep docs and code aligned when a task changes behavior or process.
 

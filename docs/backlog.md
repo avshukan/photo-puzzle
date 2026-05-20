@@ -100,6 +100,7 @@ Legend:
 |  46 | Add Umami pageview analytics                      | Value    | Medium   | Track visits via configurable ID     |
 |  47 | Add Umami gameplay events                         | Value    | Medium   | Track key game and PWA events        |
 |  48 | Document analytics configuration                  | Quality  | Low      | Env vars, dev behavior, privacy      |
+|  49 | Fix `high` vulnerabilities                        | Refactor | Low      | Just `npm audit fix`                 |
 
 ---
 
