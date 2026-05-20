@@ -10,7 +10,7 @@ We follow **Incremental Delivery**.
 
 ## How we work
 
-1. Maintain a single **Backlog** (`docs/08-backlog.md`).
+1. Maintain a single **Backlog** (`docs/backlog.md`).
 2. Before starting work, create an iteration plan in `docs/iterations/iter-XX.md`.
 3. Pick a small set of items (3–7) and keep scope stable until release.
 4. Implement as vertical slices:

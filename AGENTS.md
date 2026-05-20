@@ -17,7 +17,7 @@ The app is a Vite + React + TypeScript project using Clean Architecture.
 Current branch/scope is Iteration 3. Read these first:
 
 - `docs/iterations/iter-03.md`
-- `docs/08-backlog.md`
+- `docs/backlog.md`
 
 Iteration 3 focus:
 

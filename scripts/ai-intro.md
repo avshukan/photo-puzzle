@@ -22,7 +22,7 @@ Current focus:
 Source of truth:
 
 - `docs/iterations/iter-02.md`
-- `docs/08-backlog.md`
+- `docs/backlog.md`
 
 ---
 
