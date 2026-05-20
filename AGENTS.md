@@ -167,7 +167,7 @@ Keep this scope modest:
 
 ## Backlog And Iteration Process
 
-Backlog lives in `docs/08-backlog.md`.
+Backlog lives in `docs/backlog.md`.
 
 Sections:
 
