@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import type { PresetImage } from '../../../application';
+import { PresetThumbnail } from '../PresetThumbnail';
 import { UploadButton } from '../UploadButton';
 
 type Props = {
@@ -73,47 +74,15 @@ export function ImagePickerModal({
           }}
         >
           {presets.map((preset) => (
-            <button
+            <PresetThumbnail
               key={preset.id}
-              type="button"
-              disabled={disabled}
+              preset={preset}
               onClick={() => {
                 onSelectPreset(preset);
                 onClose();
               }}
-              style={{
-                padding: 0,
-                border: '2px solid #ddd',
-                borderRadius: 8,
-                cursor: disabled ? 'not-allowed' : 'pointer',
-                overflow: 'hidden',
-                background: 'transparent',
-                opacity: disabled ? 0.5 : 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <img
-                src={preset.imageUrl}
-                alt={preset.label}
-                style={{
-                  width: '100%',
-                  aspectRatio: '4/3',
-                  objectFit: 'cover',
-                  display: 'block',
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  padding: '4px 0',
-                  color: '#333',
-                }}
-              >
-                {preset.label}
-              </span>
-            </button>
+              disabled={disabled}
+            />
           ))}
         </div>
 
