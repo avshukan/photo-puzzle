@@ -71,6 +71,10 @@ describe('GamePage', () => {
 
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
+      // Picker should be closed so the error is visible
+      expect(
+        screen.queryByRole('dialog', { name: /choose image/i }),
+      ).not.toBeInTheDocument();
     });
   });
 

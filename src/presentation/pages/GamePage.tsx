@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Game, PresetImage } from '../../application';
-import { PRESET_IMAGES } from '../../application';
+import { PRESET_IMAGES } from '../../app/config/presets';
 import { gameService } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 import { PreviewOverlay } from '../components/PreviewOverlay';
 import { ImagePickerModal } from '../components/ImagePickerModal/ImagePickerModal';
+import { ChangeImageButton } from '../components/ChangeImageButton';
 import { APP_CONFIG } from '../../app/config/app';
 
 type FeedbackMessageProps = {
@@ -78,6 +79,7 @@ export function GamePage() {
         );
       }
     } catch (e) {
+      setIsPickerOpen(false);
       if (e instanceof Error) {
         setError(e.message);
       } else {
@@ -145,21 +147,10 @@ export function GamePage() {
             flexWrap: 'wrap',
           }}
         >
-          <button
-            type="button"
+          <ChangeImageButton
             onClick={() => setIsPickerOpen(true)}
-            style={{
-              border: '1px solid #cfcfcf',
-              borderRadius: 8,
-              padding: '6px 12px',
-              cursor: 'pointer',
-              fontSize: 14,
-              fontWeight: 600,
-              background: '#f5f5f5',
-            }}
-          >
-            Change image
-          </button>
+            disabled={isUploading}
+          />
 
           <button
             type="button"
@@ -274,24 +265,12 @@ export function GamePage() {
             <div style={{ height: 12 }} />
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                type="button"
+              <ChangeImageButton
                 onClick={() => {
                   closeVictoryModal();
                   setIsPickerOpen(true);
                 }}
-                style={{
-                  border: '1px solid #cfcfcf',
-                  borderRadius: 8,
-                  padding: '6px 12px',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  background: '#f5f5f5',
-                }}
-              >
-                Change image
-              </button>
+              />
 
               <button
                 type="button"
