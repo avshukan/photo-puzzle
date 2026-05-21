@@ -66,6 +66,14 @@ export class GameService {
     return { game, persisted: false };
   }
 
+  startWithPreset(imageUrl: string): Game {
+    const game = this.startGame.execute({ kind: 'upload', imageUrl });
+
+    this.storage.save(game);
+
+    return game;
+  }
+
   move(game: Game, fromIndex: number): Game {
     const next = this.moveTile.execute(game, fromIndex);
 

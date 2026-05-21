@@ -1,5 +1,5 @@
 import type { ImageUrlPort, ImageUrl } from '../../application';
-import defaultImage from '../../assets/default.jpg';
+import defaultImage from '../../assets/presets/preset-0.jpg';
 
 export class BrowserImageUrlAdapter implements ImageUrlPort {
   getDefaultImageUrl(): ImageUrl {

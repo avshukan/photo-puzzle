@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Game } from '../../application';
+import type { Game, PresetImage } from '../../application';
+import { PRESET_IMAGES } from '../../app/config/presets';
 import { gameService } from '../../app/compositionRoot';
 import { PuzzleBoard } from '../components/PuzzleBoard';
 import { PreviewOverlay } from '../components/PreviewOverlay';
-import { UploadButton } from '../components/UploadButton';
+import { ImagePickerModal } from '../components/ImagePickerModal/ImagePickerModal';
+import { ChangeImageButton } from '../components/ChangeImageButton';
 import { APP_CONFIG } from '../../app/config/app';
 
 type FeedbackMessageProps = {
@@ -33,7 +35,8 @@ function FeedbackMessage({ kind, children }: FeedbackMessageProps) {
 }
 
 export function GamePage() {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isVictoryModalOpen, setIsVictoryModalOpen] = useState(true);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [tileSize, setTileSize] = useState(APP_CONFIG.TILE.DEFAULT_SIZE);
   const [game, setGame] = useState<Game | null>(() => gameService.init());
@@ -41,19 +44,19 @@ export function GamePage() {
   const [warning, setWarning] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const closeModal = useCallback(() => setIsModalOpen(false), []);
+  const closeVictoryModal = useCallback(() => setIsVictoryModalOpen(false), []);
 
   useEffect(() => {
-    if (!isModalOpen) return;
+    if (!isVictoryModalOpen) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') closeVictoryModal();
     };
 
     window.addEventListener('keydown', onKeyDown);
 
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isModalOpen, closeModal]);
+  }, [isVictoryModalOpen, closeVictoryModal]);
 
   const handleUpload = async (file: File) => {
     setError(null);
@@ -66,8 +69,8 @@ export function GamePage() {
 
       setGame(next);
 
-      setIsModalOpen(true);
-
+      setIsVictoryModalOpen(true);
+      setIsPickerOpen(false);
       setIsPreviewOpen(false);
 
       if (!persisted) {
@@ -76,6 +79,7 @@ export function GamePage() {
         );
       }
     } catch (e) {
+      setIsPickerOpen(false);
       if (e instanceof Error) {
         setError(e.message);
       } else {
@@ -86,20 +90,28 @@ export function GamePage() {
     }
   };
 
+  const handleSelectPreset = (preset: PresetImage) => {
+    setError(null);
+    setWarning(null);
+    setGame(gameService.startWithPreset(preset.imageUrl));
+    setIsPickerOpen(false);
+    setIsPreviewOpen(false);
+  };
+
   const onTileClick = (fromIndex: number) => {
     setGame((prev) => (prev ? gameService.move(prev, fromIndex) : prev));
   };
 
   const handleShuffle = useCallback(() => {
     setGame((prev) => (prev ? gameService.shuffle(prev) : prev));
-    setIsModalOpen(false);
+    setIsVictoryModalOpen(false);
     setError(null);
     setWarning(null);
   }, []);
 
   if (!game) return null;
 
-  const isVictoryModalVisible = game.status === 'won' && isModalOpen;
+  const isVictoryModalVisible = game.status === 'won' && isVictoryModalOpen;
   const boardContentMaxWidth =
     game.puzzle.width * APP_CONFIG.TILE.MAX_SIZE +
     (game.puzzle.width - 1) * APP_CONFIG.BOARD.GAP_PX;
@@ -135,10 +147,9 @@ export function GamePage() {
             flexWrap: 'wrap',
           }}
         >
-          <UploadButton
-            onUpload={handleUpload}
+          <ChangeImageButton
+            onClick={() => setIsPickerOpen(true)}
             disabled={isUploading}
-            variant="primary"
           />
 
           <button
@@ -225,7 +236,7 @@ export function GamePage() {
             justifyContent: 'center',
             padding: 16,
           }}
-          onClick={closeModal}
+          onClick={closeVictoryModal}
         >
           <div
             style={{
@@ -254,10 +265,11 @@ export function GamePage() {
             <div style={{ height: 12 }} />
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <UploadButton
-                onUpload={handleUpload}
-                label="Upload new"
-                disabled={isUploading}
+              <ChangeImageButton
+                onClick={() => {
+                  closeVictoryModal();
+                  setIsPickerOpen(true);
+                }}
               />
 
               <button
@@ -276,7 +288,7 @@ export function GamePage() {
               <button
                 autoFocus
                 type="button"
-                onClick={closeModal}
+                onClick={closeVictoryModal}
                 style={{
                   padding: '6px 10px',
                   borderRadius: 8,
@@ -289,6 +301,17 @@ export function GamePage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Image picker modal */}
+      {isPickerOpen && (
+        <ImagePickerModal
+          presets={PRESET_IMAGES}
+          onSelectPreset={handleSelectPreset}
+          onUpload={handleUpload}
+          onClose={() => setIsPickerOpen(false)}
+          disabled={isUploading}
+        />
       )}
     </div>
   );

@@ -3,3 +3,4 @@ export * from './ports/ImageUrlPort';
 export * from './usecases/StartGame';
 export * from './usecases/MoveTile';
 export * from './errors/ImageErrors';
+export type { PresetImage } from './presets';
