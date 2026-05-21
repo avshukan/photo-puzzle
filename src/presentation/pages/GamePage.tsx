@@ -69,7 +69,7 @@ export function GamePage() {
       setGame(next);
 
       setIsVictoryModalOpen(true);
-
+      setIsPickerOpen(false);
       setIsPreviewOpen(false);
 
       if (!persisted) {
@@ -92,7 +92,7 @@ export function GamePage() {
     setError(null);
     setWarning(null);
     setGame(gameService.startWithPreset(preset.imageUrl));
-    setIsVictoryModalOpen(true);
+    setIsPickerOpen(false);
     setIsPreviewOpen(false);
   };
 

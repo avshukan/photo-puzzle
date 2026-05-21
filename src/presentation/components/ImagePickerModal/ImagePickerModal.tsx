@@ -31,7 +31,6 @@ export function ImagePickerModal({
 
   const handleUpload = (file: File) => {
     onUpload(file);
-    onClose();
   };
 
   return (
