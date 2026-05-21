@@ -26,7 +26,7 @@ shallow depth of field, no people, 800x600.
 
 ---
 
-### preset-2.jpg — Mountain Lake
+### preset-2.jpg — Lake
 
 ```
 Photorealistic scenic photograph of a calm alpine mountain lake at golden hour,
@@ -47,12 +47,13 @@ vibrant colors, no people, 800x600.
 
 ---
 
-### preset-4.jpg — Seaside Town
+### preset-4.jpg — Coffee
 
 ```
-Photorealistic aerial photograph of a colorful Mediterranean seaside village,
-white-washed houses with terracotta roofs, bright blue sea, small fishing boats
-in the harbour, clear sunny sky, vivid saturated colors, no people, 800x600.
+Photorealistic still-life photograph of a cozy coffee corner — a steaming cup
+of black coffee in a ceramic mug on a wooden table, an open book, scattered
+coffee beans, soft warm light from a nearby window, bokeh background, no people,
+800x600.
 ```
 
 ---
