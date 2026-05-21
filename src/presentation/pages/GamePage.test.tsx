@@ -14,6 +14,7 @@ vi.mock('../../app/compositionRoot', () => ({
   gameService: {
     init: vi.fn(),
     startWithUpload: vi.fn(),
+    startWithPreset: vi.fn(),
     move: vi.fn(),
     shuffle: vi.fn(),
   },
@@ -58,6 +59,9 @@ describe('GamePage', () => {
 
     render(<GamePage />);
 
+    // Open the image picker modal
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
+
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
 
     fireEvent.change(
@@ -80,16 +84,23 @@ describe('GamePage', () => {
 
     render(<GamePage />);
 
-    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
     const dialog = screen.getByRole('dialog', { name: /victory/i });
-    const modalInput = within(dialog).getByLabelText(
+
+    // Click "Change image" inside victory modal to open picker
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: /change image/i }),
+    );
+
+    const pickerDialog = screen.getByRole('dialog', { name: /choose image/i });
+    const modalInput = within(pickerDialog).getByLabelText(
       /upload image input/i,
     ) as HTMLInputElement;
 
+    const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
     fireEvent.change(modalInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(within(dialog).getByText(errorMessage)).toBeInTheDocument();
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
   });
 
@@ -103,19 +114,23 @@ describe('GamePage', () => {
 
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
 
+    // Open picker and upload (first → error)
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
     const input = screen.getByLabelText(
       /upload image input/i,
     ) as HTMLInputElement;
-
-    // first → error
     fireEvent.change(input, { target: { files: [file] } });
 
     await waitFor(() => {
       expect(screen.getByText('error')).toBeInTheDocument();
     });
 
-    // second → success
-    fireEvent.change(input, { target: { files: [file] } });
+    // Open picker again and upload (second → success)
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
+    const input2 = screen.getByLabelText(
+      /upload image input/i,
+    ) as HTMLInputElement;
+    fireEvent.change(input2, { target: { files: [file] } });
 
     await waitFor(() => {
       expect(screen.queryByText('error')).not.toBeInTheDocument();
@@ -131,6 +146,7 @@ describe('GamePage', () => {
 
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
 
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
     fireEvent.change(
       screen.getByLabelText(/upload image input/i) as HTMLInputElement,
       { target: { files: [file] } },
@@ -154,12 +170,13 @@ describe('GamePage', () => {
     render(<GamePage />);
 
     const file = new File(['x'], 'test.jpg', { type: 'image/jpeg' });
-    const input = screen.getByLabelText(
-      /upload image input/i,
-    ) as HTMLInputElement;
 
     // first → warning
-    fireEvent.change(input, { target: { files: [file] } });
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
+    fireEvent.change(
+      screen.getByLabelText(/upload image input/i) as HTMLInputElement,
+      { target: { files: [file] } },
+    );
 
     await waitFor(() => {
       expect(
@@ -170,7 +187,11 @@ describe('GamePage', () => {
     });
 
     // second → success, warning clears
-    fireEvent.change(input, { target: { files: [file] } });
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
+    fireEvent.change(
+      screen.getByLabelText(/upload image input/i) as HTMLInputElement,
+      { target: { files: [file] } },
+    );
 
     await waitFor(() => {
       expect(
@@ -221,6 +242,37 @@ describe('GamePage', () => {
     expect(gameService.shuffle).toHaveBeenCalledWith(mockWonGame);
     expect(
       screen.queryByRole('dialog', { name: /victory/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('Change image button opens picker modal', () => {
+    render(<GamePage />);
+
+    expect(
+      screen.queryByRole('dialog', { name: /choose image/i }),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
+
+    expect(
+      screen.getByRole('dialog', { name: /choose image/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('selecting a preset calls gameService.startWithPreset and closes picker', () => {
+    gameService.startWithPreset = vi.fn().mockReturnValue(mockGame);
+
+    render(<GamePage />);
+
+    fireEvent.click(screen.getByRole('button', { name: /change image/i }));
+
+    const picker = screen.getByRole('dialog', { name: /choose image/i });
+    const firstPreset = within(picker).getAllByRole('button')[0];
+    fireEvent.click(firstPreset);
+
+    expect(gameService.startWithPreset).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByRole('dialog', { name: /choose image/i }),
     ).not.toBeInTheDocument();
   });
 });
