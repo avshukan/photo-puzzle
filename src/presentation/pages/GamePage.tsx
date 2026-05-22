@@ -131,7 +131,6 @@ export function GamePage() {
           flexDirection: 'column',
           gap: 10,
           alignItems: 'stretch',
-          flexWrap: 'wrap',
           marginBottom: 12,
           maxWidth: boardContentMaxWidth,
           marginLeft: 'auto',
@@ -144,12 +143,14 @@ export function GamePage() {
           style={{
             display: 'flex',
             gap: 8,
-            flexWrap: 'wrap',
+            flexWrap: 'nowrap',
+            overflowX: 'auto',
           }}
         >
           <ChangeImageButton
             onClick={() => setIsPickerOpen(true)}
             disabled={isUploading}
+            style={{ flexShrink: 0 }}
           />
 
           <button
@@ -162,6 +163,7 @@ export function GamePage() {
               cursor: 'pointer',
               fontSize: 14,
               background: 'transparent',
+              flexShrink: 0,
             }}
           >
             Preview
@@ -177,6 +179,7 @@ export function GamePage() {
               cursor: 'pointer',
               fontSize: 14,
               background: 'transparent',
+              flexShrink: 0,
             }}
           >
             Shuffle
@@ -264,12 +267,20 @@ export function GamePage() {
 
             <div style={{ height: 12 }} />
 
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: 8,
+                flexWrap: 'nowrap',
+                overflowX: 'auto',
+              }}
+            >
               <ChangeImageButton
                 onClick={() => {
                   closeVictoryModal();
                   setIsPickerOpen(true);
                 }}
+                style={{ flexShrink: 0 }}
               />
 
               <button
@@ -280,6 +291,9 @@ export function GamePage() {
                   borderRadius: 8,
                   border: '1px solid #ddd',
                   cursor: 'pointer',
+                  fontSize: 14,
+                  background: 'transparent',
+                  flexShrink: 0,
                 }}
               >
                 Shuffle
@@ -294,6 +308,9 @@ export function GamePage() {
                   borderRadius: 8,
                   border: '1px solid #ddd',
                   cursor: 'pointer',
+                  fontSize: 14,
+                  background: 'transparent',
+                  flexShrink: 0,
                 }}
               >
                 Close

@@ -60,7 +60,6 @@ Legend:
 | === | ================================================= | ======== | ======== | ==================================== |
 |  41 | Add image picker with bundled presets             | Value    | High     | Gallery of preset images + upload    |
 |  38 | Add PWA manifest                                  | Value    | Medium   | App name, icons, theme color         |
-|  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
 |  45 | Add first-run image selection state               | Value    | Medium   | Offer preset or upload on first run  |
 |  39 | Add service worker for offline app shell          | Value    | Medium   | Open app offline after first load    |
 |  40 | Add PWA installability checks                     | Quality  | Low      | Lighthouse or manual checklist       |
@@ -110,6 +109,7 @@ Legend:
 | --: | ------------------------------------------------- | -------- | -------- | ------------------------------------ |
 | === | ================================================= | ======== | ======== | ==================================== |
 |   1 | Add shuffle button (restart with same image)      | Value    | High     | Recreate puzzle using current image  |
+|  44 | Improve controls layout for growing actions       | Quality  | Medium   | Keep top controls clear              |
 |  31 | Show error message on upload failure              | Quality  | High     | Avoid silent fallback                |
 |  32 | Handle storage overflow gracefully                | Quality  | High     | Fallback without image + notify user |
 |  37 | Use `browser-image-validator` for upload checks   | Refactor | High     | Replace custom validation service    |
