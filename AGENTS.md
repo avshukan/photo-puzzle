@@ -215,6 +215,22 @@ Notes:
 - For documentation-only changes, tests are usually not necessary; mention that
   they were not run.
 
+## Problem Solving Rule
+
+When debugging, fix the layer that owns the problem:
+
+- `src/domain` for puzzle rules, movement, solvability, and invariants
+- `src/application` for use-case flow and game state orchestration
+- `src/infrastructure` for storage and image pipeline behavior
+- `src/presentation` only for rendering and interaction bugs
+
+Before adding a workaround, verify the failing state or data flow first. Avoid
+patching UI state to hide application/domain bugs, suppressing type/lint errors,
+or changing tests to match broken behavior.
+
+If a temporary workaround is unavoidable, document the real cause as a known
+limitation or TODO.
+
 ## Testing Guidance
 
 Existing test style:
