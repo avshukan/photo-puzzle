@@ -217,26 +217,19 @@ Notes:
 
 ## Problem Solving Rule
 
-When something breaks, prefer fixing the root cause over hiding the symptom.
+When debugging, fix the layer that owns the problem:
 
-Before applying a workaround:
+- `src/domain` for puzzle rules, movement, solvability, and invariants
+- `src/application` for use-case flow and game state orchestration
+- `src/infrastructure` for storage and image pipeline behavior
+- `src/presentation` only for rendering and interaction bugs
 
-1. Identify what actually failed.
-2. Check whether the failure comes from design, state flow, data shape, boundaries, or tests.
-3. Fix the lowest responsible layer.
-4. Add or update tests when the issue can regress.
-5. Use temporary workarounds only when the root cause cannot be fixed safely in the current scope.
+Before adding a workaround, verify the failing state or data flow first. Avoid
+patching UI state to hide application/domain bugs, suppressing type/lint errors,
+or changing tests to match broken behavior.
 
-Avoid:
-
-- patching UI state when the bug is in application/domain logic
-- suppressing TypeScript or lint errors instead of fixing types
-- adding retries/timeouts without understanding why the operation fails
-- changing tests only to match broken behavior
-- bypassing architecture boundaries to make a feature work faster
-
-If a quick workaround is still needed, document it as a known limitation or TODO
-and explain the real cause.
+If a temporary workaround is unavoidable, document the real cause as a known
+limitation or TODO.
 
 ## Testing Guidance
 
@@ -263,7 +256,6 @@ Keep tests focused on behavior rather than implementation details.
 
 Follow the existing TypeScript/React style:
 
-- Prefer root-cause fixes over symptom-level patches.
 - strict-ish TypeScript with explicit domain/application types
 - immutable updates for domain/application state
 - small pure functions in domain
