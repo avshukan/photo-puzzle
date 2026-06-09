@@ -7,7 +7,11 @@ const isDev = import.meta.env.DEV;
 
 function log(message: string, data?: unknown) {
   if (isDev || data instanceof Error) {
-    console.log(message, data);
+    if (data instanceof Error) {
+      console.error(message, data);
+    } else {
+      console.log(message, data);
+    }
   }
 }
 
