@@ -7,6 +7,8 @@
 const CACHE_NAME = 'photo-puzzle-v1';
 
 // Files to cache on install (app shell)
+// Note: Build artifacts (CSS, JS, images) are cached dynamically on first request
+// by the cache-first strategy, so they don't need to be listed here.
 const STATIC_ASSETS = ['/', '/index.html', '/manifest.json'];
 
 // Install event: cache the app shell
@@ -77,7 +79,7 @@ self.addEventListener('fetch', (event) => {
           })
           .catch(() => {
             // Return offline response if fetch fails
-            return new Response('Offline - asset not available', {
+            return new Response('Unable to load asset offline', {
               status: 503,
             });
           });
@@ -106,7 +108,7 @@ self.addEventListener('fetch', (event) => {
           .then(
             (cachedResponse) =>
               cachedResponse ||
-              new Response('Offline - page not available', { status: 503 }),
+              new Response('Page not available offline', { status: 503 }),
           );
       }),
   );

@@ -3,10 +3,18 @@
  * Handles registration and lifecycle of the service worker
  */
 
+const isDev = import.meta.env.DEV;
+
+function log(message: string, data?: unknown) {
+  if (isDev || data instanceof Error) {
+    console.log(message, data);
+  }
+}
+
 export function registerServiceWorker() {
   // Check if service workers are supported
   if (!navigator.serviceWorker) {
-    console.log('Service Workers not supported in this browser');
+    log('Service Workers not supported in this browser');
     return;
   }
 
@@ -14,7 +22,7 @@ export function registerServiceWorker() {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(
       (registration) => {
-        console.log('Service Worker registered successfully:', registration);
+        log('Service Worker registered successfully:', registration);
 
         // Listen for updates
         registration.addEventListener('updatefound', () => {
@@ -27,9 +35,7 @@ export function registerServiceWorker() {
               navigator.serviceWorker.controller
             ) {
               // New service worker available - ready to be used
-              console.log(
-                'New Service Worker available - ready to be activated',
-              );
+              log('New Service Worker available - ready to be activated');
             }
           });
         });
