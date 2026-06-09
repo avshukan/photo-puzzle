@@ -1,5 +1,8 @@
 // Service Worker for offline support
 // Caches the app shell and serves it when offline
+//
+// NOTE: When updating the app, increment CACHE_NAME version (e.g., v2, v3)
+// to ensure old caches are invalidated and users get fresh assets.
 
 const CACHE_NAME = 'photo-puzzle-v1';
 
@@ -57,23 +60,28 @@ self.addEventListener('fetch', (event) => {
     request.url.includes('/favicon')
   ) {
     event.respondWith(
-      caches
-        .match(request)
-        .then((response) => response || fetch(request))
-        .then((response) => {
-          // Cache successful responses
-          if (response && response.status === 200) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request)
+          .then((response) => {
+            // Cache successful responses
+            if (response && response.status === 200) {
+              const responseClone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseClone);
+              });
+            }
+            return response;
+          })
+          .catch(() => {
+            // Return offline response if fetch fails
+            return new Response('Offline - asset not available', {
+              status: 503,
             });
-          }
-          return response;
-        })
-        .catch(() => {
-          // Return cached version if fetch fails
-          return caches.match(request);
-        }),
+          });
+      }),
     );
     return;
   }
@@ -96,8 +104,8 @@ self.addEventListener('fetch', (event) => {
         return caches
           .match(request)
           .then(
-            (response) =>
-              response ||
+            (cachedResponse) =>
+              cachedResponse ||
               new Response('Offline - page not available', { status: 503 }),
           );
       }),
