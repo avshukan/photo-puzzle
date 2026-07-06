@@ -65,6 +65,7 @@ does not complete the iteration by itself.
 ### Commands (recommended)
 
 ```bash
-npm version minor
+npm version patch   # for an interim release within an active iteration
+npm version minor   # for the iteration milestone release
 git push --follow-tags
 ```
