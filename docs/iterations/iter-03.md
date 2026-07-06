@@ -143,5 +143,7 @@ To be filled after implementation.
 
 ## Release
 
-- Target version: v0.4.0
+- Milestone target version: v0.4.0
+- Interim patch releases may happen before iteration completion when a safe
+  subset of merged work should be deployed.
 - Status: Planned
