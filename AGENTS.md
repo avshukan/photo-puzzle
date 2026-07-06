@@ -28,7 +28,8 @@ Iteration 3 focus:
 Current iteration items in the backlog are kept under `## Current Iteration`.
 When the iteration finishes, move the full scope from `Current Iteration` to
 `Done` together; do not mark individual tasks done one by one unless the user
-explicitly asks for that workflow.
+explicitly asks for that workflow. Interim patch releases may happen before the
+iteration is complete.
 
 ## Essential Docs
 
@@ -190,6 +191,7 @@ Process:
 - Keep iteration scope stable during implementation
 - If new ideas appear during an iteration, add them to `Todo`, not to current
   scope, unless the user explicitly changes scope
+- Mid-iteration releases do not move `Current Iteration` to `Done`
 - At iteration completion, update `CHANGELOG.md` and release/version docs
 
 ## Commands
@@ -281,15 +283,22 @@ when it removes real duplication or protects a clear boundary.
 
 Versioning follows SemVer with `v` tags:
 
-- `v0.(x+1).0` for new feature increments
-- `v0.x.(y+1)` for fixes/small improvements
+- `v0.(x+1).0` for milestone releases / new feature increments
+- `v0.x.(y+1)` for patch releases, fixes, or safe interim releases within an active iteration
 
 `package.json` stores the same version without the `v` prefix.
+
+Release/deploy model:
+
+- merge to `main` = integration
+- release tag = explicit release decision
+- pushing tag `vX.Y.Z` = production deploy
+- an iteration may include zero, one, or multiple releases
 
 Definition of Done for an iteration:
 
 - planned items are merged to `main`
 - `npm run lint`, `npm test`, and `npm run build` are green
-- demo is deployed and works
+- demo is deployed from the release tag and works
 - `CHANGELOG.md` is updated
 - git tag exists for the release

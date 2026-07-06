@@ -37,12 +37,14 @@ We follow **Incremental Delivery**.
 
 - Work is planned in **iterations**
 - Each iteration delivers a **vertical slice**
-- Each merge to `main` is automatically deployed
+- Merge to `main` means integration, not production deploy
+- Production deploy happens from release tags `vX.Y.Z`
+- Iterations and releases do not need to match 1:1; an iteration may include interim releases
 
 Versioning: **SemVer** (`v0.x.y`)
 
-- `v0.(x+1).0` — new features
-- `v0.x.(y+1)` — fixes
+- `v0.(x+1).0` — milestone / noticeable increment
+- `v0.x.(y+1)` — patch or interim release
 
 ## Scripts
 

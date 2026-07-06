@@ -45,10 +45,12 @@ Legend:
 
 4. During iteration:
    - keep the current iteration scope in Current Iteration
-   - avoid adding new tasks
+   - new tasks may be added to Todo at any time
+   - do not move new tasks into Current Iteration unless scope is explicitly changed
 
 5. After completion:
-   - move all completed scope items from Current Iteration to Done
+   - move the full completed iteration scope from Current Iteration to Done
+   - do not treat a mid-iteration release/tag as iteration completion
    - update CHANGELOG if needed
 
 ---
