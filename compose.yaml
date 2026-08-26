@@ -1,0 +1,14 @@
+services:
+  photo-puzzle:
+    build:
+      context: .
+    restart: unless-stopped
+    networks:
+      web:
+        aliases:
+          - photo-puzzle
+
+networks:
+  web:
+    external: true
+    name: web
